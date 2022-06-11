@@ -1,10 +1,15 @@
 package com.example.compose
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.dp
+import com.emelyanov.vegocity.ui.theme.VegoCityTypography
 
 
 private val LightColors = lightColorScheme(
@@ -68,17 +73,24 @@ private val DarkColors = darkColorScheme(
 
 @Composable
 fun VegoCityTheme(
-  useDarkTheme: Boolean = isSystemInDarkTheme(),
-  content: @Composable() () -> Unit
+    useDarkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable() () -> Unit
 ) {
-  val colors = if (!useDarkTheme) {
-    LightColors
-  } else {
-    DarkColors
-  }
+    val colors = if (!useDarkTheme) {
+        LightColors
+    } else {
+        DarkColors
+    }
 
-  MaterialTheme(
-    colorScheme = colors,
-    content = content
-  )
+    val conf = LocalConfiguration
+
+    MaterialTheme(
+        colorScheme = colors,
+        content = content,
+        typography = VegoCityTypography
+    )
 }
+
+
+val ButtonDefaults.smallPadding: PaddingValues
+    get() = PaddingValues(horizontal = 18.dp, vertical = 3.dp)

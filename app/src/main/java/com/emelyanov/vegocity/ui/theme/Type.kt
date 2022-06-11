@@ -16,7 +16,7 @@ val Exo2 = FontFamily(
 )
 
 // Set of Material typography styles to start with
-val Typography = Typography(
+val VegoCityTypography = Typography(
     labelLarge = TextStyle(
         fontFamily = Exo2,
         fontWeight = FontWeight.Medium,
@@ -103,7 +103,7 @@ val Typography = Typography(
     ),
     titleLarge = TextStyle(
         fontFamily = Exo2,
-        fontWeight = FontWeight.W400,
+        fontWeight = FontWeight.SemiBold,
         letterSpacing = 0.sp,
         lineHeight = 28.sp,
         fontSize = 22.sp
