@@ -31,8 +31,9 @@ fun VegoTextField(
     leadingIcon: @Composable (() -> Unit)? = null,
     shape: Shape = RoundedCornerShape(16.dp),
     singleLine: Boolean = true,
+    maxLines: Int = 1,
     textStyle: TextStyle = MaterialTheme.typography.bodyLarge
-        .copy(color = MaterialTheme.colorScheme.onSurface)
+        .copy(color = MaterialTheme.colorScheme.onSurface),
 ) {
     var isInFocus by remember { mutableStateOf(false) }
     trailingIcon?.let{ it() }
@@ -67,6 +68,7 @@ fun VegoTextField(
 
         },
         singleLine = singleLine,
+        maxLines = maxLines,
         textStyle = textStyle
     )
 }

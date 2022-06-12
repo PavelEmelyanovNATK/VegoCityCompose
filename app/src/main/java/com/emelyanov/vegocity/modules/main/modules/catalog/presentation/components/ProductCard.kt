@@ -2,10 +2,7 @@ package com.emelyanov.vegocity.modules.main.modules.catalog.presentation.compone
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,15 +12,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.emelyanov.vegocity.R
 
-internal val PRODUCT_CARD_HEIGHT = 140.dp
+internal val PRODUCT_CARD_HEIGHT = 150.dp
 internal val CORNER_RADIUS = 16.dp
 
 @Composable
 fun ProductCard(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier
@@ -32,35 +30,53 @@ fun ProductCard(
         Image(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(PRODUCT_CARD_HEIGHT/3 * 2 + CORNER_RADIUS)
+                .height(PRODUCT_CARD_HEIGHT / 2 + CORNER_RADIUS)
                 .clip(RoundedCornerShape(topStart = CORNER_RADIUS, topEnd = CORNER_RADIUS)),
             painter = painterResource(R.drawable.test_image),
             contentDescription = "Product image",
             contentScale = ContentScale.Crop
         )
 
-        Box(
+        Column(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
                 .fillMaxWidth()
-                .height(PRODUCT_CARD_HEIGHT/3 + CORNER_RADIUS)
+                .align(Alignment.BottomCenter)
+                .height(PRODUCT_CARD_HEIGHT / 2)
                 .clip(RoundedCornerShape(CORNER_RADIUS))
-                .background(MaterialTheme.colorScheme.surfaceVariant)
+                .background(MaterialTheme.colorScheme.surfaceVariant),
         ) {
             Text(
-                modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp),
-                text = "Title",
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 14.dp, top = 8.dp, end = 14.dp),
+                text = "Tiasdasdasdasdasdasdasdassasdasdasdtle",
                 style = MaterialTheme.typography.labelLarge
-                    .copy(color = MaterialTheme.colorScheme.onSecondaryContainer)
+                    .copy(color = MaterialTheme.colorScheme.onSecondaryContainer),
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 2
             )
 
             Text(
                 modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(horizontal = 14.dp, vertical = 8.dp),
+                    .padding(start = 14.dp, bottom = 8.dp, end = 14.dp),
                 text = "123142",
                 style = MaterialTheme.typography.labelMedium
                     .copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .offset(x = 2.dp, y = (-2).dp)
+                .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp, bottomEnd = 8.dp, bottomStart = 2.dp))
+                .background(MaterialTheme.colorScheme.tertiary)
+                .padding(vertical = 2.dp, horizontal = 6.dp)
+        ) {
+            Text(
+                text = "Новинка",
+                style = MaterialTheme.typography.labelSmall
+                    .copy(color = MaterialTheme.colorScheme.onTertiary)
             )
         }
     }

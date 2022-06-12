@@ -27,54 +27,49 @@ fun DropdownToolBar(
     onButtonClick: () -> Unit,
 ) {
     val expandState = if(!isExpanded()) 1f - expandProgress() else expandProgress()
-
-    Box(
+    Row(
         modifier = modifier
             .fillMaxWidth()
             .height(TOOL_BAR_HEIGHT.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically
+        Box(
+            modifier = Modifier
+                .padding(18.dp)
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = rememberRipple(radius = 24.dp, bounded = false),
+                    onClick = onButtonClick
+                ),
+            contentAlignment = Alignment.Center
         ) {
-            Box(
+            Icon(
                 modifier = Modifier
-                    .padding(18.dp)
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = rememberRipple(radius = 24.dp, bounded = false),
-                        onClick = onButtonClick
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .graphicsLayer {
-                            alpha = expandState
-                            rotationZ = 180 * expandProgress()
-                        },
-                    painter = painterResource(id = R.drawable.ic_menu),
-                    contentDescription = "Menu button",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                    .graphicsLayer {
+                        alpha = expandState
+                        rotationZ = 180 * expandProgress()
+                    },
+                painter = painterResource(id = R.drawable.ic_menu),
+                contentDescription = "Menu button",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
 
-                Icon(
-                    modifier = Modifier
-                        .graphicsLayer {
-                            alpha = 1 - expandState
-                            rotationZ = -360 * expandProgress()
-                        },
-                    painter = painterResource(id = R.drawable.ic_expand),
-                    contentDescription = "Menu button",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleLarge
-                    .copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+            Icon(
+                modifier = Modifier
+                    .graphicsLayer {
+                        alpha = 1 - expandState
+                        rotationZ = -360 * expandProgress()
+                    },
+                painter = painterResource(id = R.drawable.ic_expand),
+                contentDescription = "Menu button",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
+
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleLarge
+                .copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
+        )
     }
 }

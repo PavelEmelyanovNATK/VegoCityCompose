@@ -5,9 +5,7 @@ import androidx.compose.animation.core.InfiniteRepeatableSpec
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Chip
 import androidx.compose.material.ChipDefaults
@@ -41,6 +39,8 @@ fun CategoriesMenu(
             style = MaterialTheme.typography.bodyLarge
                 .copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
         )
+
+        Spacer(Modifier.height(10.dp))
 
         FlowRow(
             modifier = Modifier.fillMaxWidth(),

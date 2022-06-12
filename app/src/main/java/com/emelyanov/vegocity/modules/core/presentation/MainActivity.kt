@@ -3,6 +3,7 @@ package com.emelyanov.vegocity.modules.core.presentation
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,11 +27,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.rememberNavController
 import com.emelyanov.vegocity.R
 import com.emelyanov.vegocity.modules.main.presentation.MainScreen
+import com.emelyanov.vegocity.modules.orderregistration.presentation.OrderRegistrationScreen
 import com.emelyanov.vegocity.shared.presentation.components.FlexScaffold
 import com.example.compose.VegoCityTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
 
+@ExperimentalAnimationApi
 @ExperimentalSnapperApi
 @ExperimentalPagerApi
 @ExperimentalMaterial3Api
@@ -41,7 +44,8 @@ class MainActivity : ComponentActivity() {
         setTheme(R.style.Theme_VegoCityCompose)
         setContent {
             VegoCityTheme {
-                MainScreen()
+                OrderRegistrationScreen()
+                //MainScreen()
             }
         }
     }

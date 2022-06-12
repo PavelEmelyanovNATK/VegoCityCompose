@@ -1,6 +1,7 @@
 package com.emelyanov.vegocity.modules.main.presentation
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.ExperimentalMaterialApi
@@ -19,8 +20,11 @@ import com.emelyanov.vegocity.shared.presentation.components.FlexScaffold
 import com.example.compose.VegoCityTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
+
+@ExperimentalAnimationApi
 @ExperimentalSnapperApi
 @ExperimentalPagerApi
 @ExperimentalMaterialApi
@@ -61,6 +65,8 @@ fun MainScreen(
     }
 }
 
+
+@ExperimentalAnimationApi
 @ExperimentalSnapperApi
 @ExperimentalPagerApi
 @ExperimentalMaterialApi

@@ -23,7 +23,7 @@ import com.example.compose.VegoCityTheme
 
 @ExperimentalMaterialApi
 @Composable
-fun CatalogHeader(
+fun SearchFilterToolBar(
     modifier: Modifier = Modifier,
     onFilterClick: () -> Unit
 ) {

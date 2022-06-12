@@ -6,18 +6,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.BackdropScaffold
 import androidx.compose.material.BackdropValue
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.rememberBackdropScaffoldState
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -25,18 +21,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.emelyanov.vegocity.modules.main.modules.catalog.presentation.components.CatalogHeader
+import com.emelyanov.vegocity.modules.main.modules.catalog.presentation.components.SearchFilterToolBar
 import com.emelyanov.vegocity.modules.main.modules.catalog.presentation.components.CategoriesMenu
 import com.emelyanov.vegocity.modules.main.modules.catalog.presentation.components.NewProductsPager
 import com.emelyanov.vegocity.modules.main.modules.catalog.presentation.components.ProductCard
 import com.emelyanov.vegocity.modules.main.presentation.components.NAV_BAR_HEIGHT
 import com.emelyanov.vegocity.shared.presentation.components.BottomBarOffset
-import com.emelyanov.vegocity.shared.presentation.components.PreUpPostDownNestedScrollConnection
 import com.emelyanov.vegocity.shared.presentation.components.SwipeableIndicator
 import com.emelyanov.vegocity.shared.presentation.components.VegoChip
 import com.emelyanov.vegocity.shared.utils.TOOL_BAR_HEIGHT
@@ -80,7 +74,7 @@ fun CatalogScreen(
         frontLayerScrimColor = Color.Transparent,
         frontLayerShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         appBar = {
-            CatalogHeader(
+            SearchFilterToolBar(
                 onFilterClick = {
                     coroutineScope.launch {
                         if(backdropState.isConcealed)
@@ -127,7 +121,6 @@ fun CatalogScreen(
                     ) {
                         item(
                             key = "title1",
-                            //span = { GridItemSpan(this.maxCurrentLineSpan) }
                         ) {
                             Text(
                                 modifier = Modifier
@@ -140,7 +133,6 @@ fun CatalogScreen(
 
                         item(
                             key = "pager",
-                            //span = { GridItemSpan(this.maxCurrentLineSpan) }
                         ) {
                             NewProductsPager(
                                 modifier = Modifier
@@ -151,7 +143,6 @@ fun CatalogScreen(
 
                         item(
                             key = "categories",
-                            //span = { GridItemSpan(this.maxCurrentLineSpan) }
                         ) {
                             val first5categories  = remember(groupedProducts) {
                                 groupedProducts.keys.take(5).toList()
@@ -160,6 +151,7 @@ fun CatalogScreen(
                             LazyRow(
                                 modifier = Modifier
                                     .padding(18.dp)
+                                    .fillMaxWidth()
                                     .clip(RoundedCornerShape(8.dp))
                                     .background(MaterialTheme.colorScheme.surfaceVariant),
                                 contentPadding = PaddingValues(10.dp),
@@ -244,13 +236,4 @@ val groupedProducts = mapOf(
     "Блины" to (1..9).toList(),
 )
 
-fun Modifier.ignoreHorizontalParentPadding(horizontal: Dp = 0.dp): Modifier {
-    return this.layout { measurable, constraints ->
-        val overridenWidth = constraints.maxWidth + 2 * horizontal.roundToPx()
-        val placeable = measurable.measure(constraints.copy(maxWidth = overridenWidth))
-        layout(placeable.width, placeable.height) {
-            placeable.place(0, 0)
-        }
-    }
-}
 

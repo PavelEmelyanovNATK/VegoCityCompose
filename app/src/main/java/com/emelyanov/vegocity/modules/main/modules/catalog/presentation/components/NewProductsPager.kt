@@ -24,7 +24,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import com.emelyanov.vegocity.modules.main.modules.catalog.presentation.ignoreHorizontalParentPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -55,7 +54,6 @@ fun NewProductsPager(
 
         LazyRow(
             modifier = Modifier
-                .ignoreHorizontalParentPadding()
                 .fillMaxWidth()
                 .wrapContentHeight(),
             state = state,
