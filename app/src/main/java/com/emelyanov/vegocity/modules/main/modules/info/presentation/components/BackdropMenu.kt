@@ -55,7 +55,7 @@ private fun BackdropMenuItem(
     iconContentDescription: String
 ) {
     val selectionColor = if(isSelected()) MaterialTheme.colorScheme.secondary else Color.Transparent
-    val titleColor = if(isSelected()) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onSecondaryContainer
+    val titleColor = if(isSelected()) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onSurfaceVariant
     Surface(
         modifier = Modifier
             .fillMaxWidth()

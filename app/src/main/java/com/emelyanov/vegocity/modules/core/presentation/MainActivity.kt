@@ -28,7 +28,11 @@ import com.emelyanov.vegocity.R
 import com.emelyanov.vegocity.modules.main.presentation.MainScreen
 import com.emelyanov.vegocity.shared.presentation.components.FlexScaffold
 import com.example.compose.VegoCityTheme
+import com.google.accompanist.pager.ExperimentalPagerApi
+import dev.chrisbanes.snapper.ExperimentalSnapperApi
 
+@ExperimentalSnapperApi
+@ExperimentalPagerApi
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi
 class MainActivity : ComponentActivity() {

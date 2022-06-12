@@ -1,5 +1,6 @@
 package com.emelyanov.vegocity.modules.main.modules.info.presentation.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -11,11 +12,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.emelyanov.vegocity.R
-
-const val TOOL_BAR_HEIGHT = 60
+import com.emelyanov.vegocity.shared.utils.TOOL_BAR_HEIGHT
 
 @Composable
 fun DropdownToolBar(
@@ -27,11 +28,10 @@ fun DropdownToolBar(
 ) {
     val expandState = if(!isExpanded()) 1f - expandProgress() else expandProgress()
 
-    Surface(
+    Box(
         modifier = modifier
             .fillMaxWidth()
             .height(TOOL_BAR_HEIGHT.dp),
-        color = MaterialTheme.colorScheme.secondaryContainer,
     ) {
         Row(
             modifier = Modifier.fillMaxSize(),
@@ -49,28 +49,31 @@ fun DropdownToolBar(
             ) {
                 Icon(
                     modifier = Modifier
-                        .rotate(180 * expandProgress())
-                        .alpha(expandState),
+                        .graphicsLayer {
+                            alpha = expandState
+                            rotationZ = 180 * expandProgress()
+                        },
                     painter = painterResource(id = R.drawable.ic_menu),
                     contentDescription = "Menu button",
-                    tint = MaterialTheme.colorScheme.onSecondaryContainer
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
                 Icon(
                     modifier = Modifier
-                        .rotate( -360 * expandProgress())
-                        .alpha(1 - expandState),
+                        .graphicsLayer {
+                            alpha = 1 - expandState
+                            rotationZ = -360 * expandProgress()
+                        },
                     painter = painterResource(id = R.drawable.ic_expand),
                     contentDescription = "Menu button",
-                    tint = MaterialTheme.colorScheme.onSecondaryContainer
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
-
 
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleLarge
-                    .copy(color = MaterialTheme.colorScheme.onSecondaryContainer)
+                    .copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
             )
         }
     }

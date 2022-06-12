@@ -165,7 +165,7 @@ fun CartItem(
                 .padding(start = IMAGE_WIDTH.dp - OVERLAP_OFFSET.dp)
                 .offset { IntOffset(state.offset.value.roundToInt(), 0) }
                 .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.secondaryContainer)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
         ) {
             Text(
                 modifier = Modifier
@@ -173,7 +173,7 @@ fun CartItem(
                     .padding(18.dp),
                 text = "Title",
                 style = MaterialTheme.typography.labelLarge
-                    .copy(color = MaterialTheme.colorScheme.onSecondaryContainer)
+                    .copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
             )
 
             Text(
@@ -182,7 +182,7 @@ fun CartItem(
                     .padding(18.dp),
                 text = "111111",
                 style = MaterialTheme.typography.labelMedium
-                    .copy(color = MaterialTheme.colorScheme.onSecondaryContainer)
+                    .copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
             )
 
             VerticalVegoCounter(

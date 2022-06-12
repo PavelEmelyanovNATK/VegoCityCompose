@@ -1,16 +1,24 @@
 package com.emelyanov.vegocity.shared.presentation.components
 
+import androidx.compose.animation.core.Animatable
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.ScrollableState
+import androidx.compose.foundation.gestures.animateScrollBy
+import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -23,6 +31,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @ExperimentalMaterialApi
@@ -77,7 +89,7 @@ fun DetailScreenBackdrop(
                     orientation = Orientation.Vertical,
                     resistance = null
                 )
-                .offset{ IntOffset(x = 0, y = swipeableState.offset.value.roundToInt()) }
+                .offset { IntOffset(x = 0, y = swipeableState.offset.value.roundToInt()) }
                 .nestedScroll(swipeableState.PreUpPostDownNestedScrollConnection),
             color = foregroundColor,
             shape = RoundedCornerShape(topEnd = backgroundCornerRadius, topStart = backgroundCornerRadius),
@@ -89,7 +101,7 @@ fun DetailScreenBackdrop(
 internal var minBound = Float.NEGATIVE_INFINITY
 
 @ExperimentalMaterialApi
-internal val <T> SwipeableState<T>.PreUpPostDownNestedScrollConnection: NestedScrollConnection
+val <T> SwipeableState<T>.PreUpPostDownNestedScrollConnection: NestedScrollConnection
     get() = object : NestedScrollConnection {
         override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
             val delta = available.toFloat()
@@ -127,8 +139,8 @@ internal val <T> SwipeableState<T>.PreUpPostDownNestedScrollConnection: NestedSc
             performFling(velocity = Offset(available.x, available.y).toFloat())
             return available
         }
-
-        private fun Float.toOffset(): Offset = Offset(0f, this)
-
-        private fun Offset.toFloat(): Float = this.y
     }
+
+internal fun Float.toOffset(): Offset = Offset(0f, this)
+
+internal fun Offset.toFloat(): Float = this.y

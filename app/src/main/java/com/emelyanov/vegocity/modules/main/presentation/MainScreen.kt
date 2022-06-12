@@ -17,8 +17,12 @@ import com.emelyanov.vegocity.modules.main.presentation.components.VegoNavBar
 import com.emelyanov.vegocity.navigation.main.MainNavHost
 import com.emelyanov.vegocity.shared.presentation.components.FlexScaffold
 import com.example.compose.VegoCityTheme
+import com.google.accompanist.pager.ExperimentalPagerApi
+import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import kotlinx.coroutines.launch
 
+@ExperimentalSnapperApi
+@ExperimentalPagerApi
 @ExperimentalMaterialApi
 @ExperimentalMaterial3Api
 @Composable
@@ -57,6 +61,8 @@ fun MainScreen(
     }
 }
 
+@ExperimentalSnapperApi
+@ExperimentalPagerApi
 @ExperimentalMaterialApi
 @ExperimentalMaterial3Api
 @Composable

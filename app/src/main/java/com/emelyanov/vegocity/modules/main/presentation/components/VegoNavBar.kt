@@ -21,6 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -196,7 +197,9 @@ private fun RowScope.VegoNavBarItem(
                     .copy(
                         color = color.value,
                         fontWeight = if(isSelected()) FontWeight.SemiBold else FontWeight.Medium
-                    )
+                    ),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

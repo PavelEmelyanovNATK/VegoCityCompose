@@ -17,9 +17,9 @@ import androidx.compose.ui.unit.dp
 import com.emelyanov.vegocity.R
 import com.emelyanov.vegocity.modules.main.modules.info.presentation.components.BackdropMenu
 import com.emelyanov.vegocity.modules.main.modules.info.presentation.components.DropdownToolBar
-import com.emelyanov.vegocity.modules.main.modules.info.presentation.components.TOOL_BAR_HEIGHT
 import com.emelyanov.vegocity.shared.presentation.components.BottomBarOffset
 import com.emelyanov.vegocity.shared.presentation.components.BottomBarVisibility
+import com.emelyanov.vegocity.shared.utils.TOOL_BAR_HEIGHT
 import kotlinx.coroutines.launch
 
 @ExperimentalMaterialApi
@@ -54,7 +54,7 @@ fun InfoScreen(
     BackdropScaffold(
         modifier = Modifier.fillMaxSize(),
         scaffoldState = backdropState,
-        backLayerBackgroundColor = MaterialTheme.colorScheme.secondaryContainer,
+        backLayerBackgroundColor = MaterialTheme.colorScheme.surfaceVariant,
         frontLayerBackgroundColor = MaterialTheme.colorScheme.background,
         peekHeight = TOOL_BAR_HEIGHT.dp,
         frontLayerElevation = 0.dp,

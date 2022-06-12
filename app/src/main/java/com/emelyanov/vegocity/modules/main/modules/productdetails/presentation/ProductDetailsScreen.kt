@@ -24,7 +24,9 @@ import com.emelyanov.vegocity.R
 import com.emelyanov.vegocity.modules.main.presentation.components.NAV_BAR_HEIGHT
 import com.emelyanov.vegocity.shared.presentation.components.DetailScreenBackdrop
 import com.emelyanov.vegocity.shared.presentation.components.HorizontalVegoCounter
+import com.emelyanov.vegocity.shared.presentation.components.SwipeableIndicator
 import com.example.compose.smallPadding
+import io.iamjosephmj.flinger.bahaviours.StockFlingBehaviours
 
 private const val IMAGE_HEIGHT = 216
 private const val OVERLAP_OFFSET = 16
@@ -77,12 +79,9 @@ fun ProductDetailsScreen(
                         }
                     }
 
-                    Box(
+                    SwipeableIndicator(
                         modifier = Modifier
                             .align(Alignment.Center)
-                            .height(6.dp)
-                            .width(100.dp)
-                            .clip(RoundedCornerShape(50))
                             .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = swipeStateInfluence))
                     )
                 }
@@ -116,7 +115,10 @@ fun ProductDetailsScreen(
                     Column(
                         modifier = Modifier
                             .weight(1f)
-                            .verticalScroll(rememberScrollState())
+                            .verticalScroll(
+                                state = rememberScrollState(),
+                                flingBehavior = StockFlingBehaviours.smoothScroll()
+                            )
                     ) {
                         Text(
                             modifier = Modifier
