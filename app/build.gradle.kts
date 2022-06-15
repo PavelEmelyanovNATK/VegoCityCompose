@@ -1,6 +1,10 @@
+
+
 plugins {
-    id ("com.android.application")
-    id ("org.jetbrains.kotlin.android")
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+    id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
 }
 
 android {
@@ -22,6 +26,7 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
@@ -76,4 +81,13 @@ dependencies {
     //Flinger
     val flinger_version: String by rootProject.extra
     implementation ("com.github.iamjosephmj:Flinger:$flinger_version")
+
+    //Hilt
+    val hilt_version: String by rootProject.extra
+    implementation("com.google.dagger:hilt-android:$hilt_version")
+    kapt("com.google.dagger:hilt-compiler:$hilt_version")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+
+    //Coil
+    implementation("io.coil-kt:coil-compose:2.1.0")
 }

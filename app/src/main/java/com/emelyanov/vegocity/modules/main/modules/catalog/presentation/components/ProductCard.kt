@@ -22,6 +22,9 @@ internal val CORNER_RADIUS = 16.dp
 @Composable
 fun ProductCard(
     modifier: Modifier = Modifier,
+    title: String,
+    price: Int,
+    isNew: Boolean
 ) {
     Box(
         modifier = modifier
@@ -49,7 +52,7 @@ fun ProductCard(
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = 14.dp, top = 8.dp, end = 14.dp),
-                text = "Tiasdasdasdasdasdasdasdassasdasdasdtle",
+                text = title,
                 style = MaterialTheme.typography.labelLarge
                     .copy(color = MaterialTheme.colorScheme.onSecondaryContainer),
                 overflow = TextOverflow.Ellipsis,
@@ -59,12 +62,13 @@ fun ProductCard(
             Text(
                 modifier = Modifier
                     .padding(start = 14.dp, bottom = 8.dp, end = 14.dp),
-                text = "123142",
+                text = "$price руб",
                 style = MaterialTheme.typography.labelMedium
                     .copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
             )
         }
 
+        if(isNew)
         Box(
             modifier = Modifier
                 .align(Alignment.TopEnd)

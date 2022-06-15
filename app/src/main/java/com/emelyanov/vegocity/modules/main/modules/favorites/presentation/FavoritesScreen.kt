@@ -5,10 +5,8 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.*
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BackdropScaffold
 import androidx.compose.material.BackdropValue
@@ -23,9 +21,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import com.emelyanov.vegocity.modules.main.modules.catalog.presentation.components.CategoriesMenu
-import com.emelyanov.vegocity.modules.main.modules.catalog.presentation.components.NewProductsPager
-import com.emelyanov.vegocity.modules.main.modules.catalog.presentation.components.ProductCard
+import com.emelyanov.vegocity.shared.presentation.components.CategoriesMenu
 import com.emelyanov.vegocity.modules.main.modules.catalog.presentation.components.SearchFilterToolBar
 import com.emelyanov.vegocity.modules.main.modules.favorites.presentation.components.FavoriteCard
 import com.emelyanov.vegocity.modules.main.presentation.components.NAV_BAR_HEIGHT
@@ -79,11 +75,13 @@ fun FavoritesScreen(
                         else
                             backdropState.conceal()
                     }
-                }
+                },
+                searchFieldValue = "",
+                onValueChange = {}
             )
         },
         backLayerContent = {
-            CategoriesMenu(categories = groupedProducts.keys.toList())
+            CategoriesMenu(categories = listOf(), onCategoryClick = { })
         },
         frontLayerContent = {
             Column {

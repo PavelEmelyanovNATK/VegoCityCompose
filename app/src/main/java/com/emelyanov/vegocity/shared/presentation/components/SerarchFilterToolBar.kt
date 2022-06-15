@@ -25,6 +25,8 @@ import com.example.compose.VegoCityTheme
 @Composable
 fun SearchFilterToolBar(
     modifier: Modifier = Modifier,
+    searchFieldValue: String,
+    onValueChange: (String) -> Unit,
     onFilterClick: () -> Unit
 ) {
     Row(
@@ -38,8 +40,8 @@ fun SearchFilterToolBar(
             modifier = Modifier
                 .weight(1f)
                 .height(40.dp),
-            value = "",
-            onValueChange = {},
+            value = searchFieldValue,
+            onValueChange = onValueChange,
             singleLine = true,
             shape = RoundedCornerShape(8.dp),
             textStyle = MaterialTheme.typography.bodyLarge

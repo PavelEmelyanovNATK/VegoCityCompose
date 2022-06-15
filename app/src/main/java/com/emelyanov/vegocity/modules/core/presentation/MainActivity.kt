@@ -28,9 +28,11 @@ import androidx.navigation.compose.rememberNavController
 import com.emelyanov.vegocity.R
 import com.emelyanov.vegocity.modules.main.presentation.MainScreen
 import com.emelyanov.vegocity.modules.orderregistration.presentation.OrderRegistrationScreen
+import com.emelyanov.vegocity.navigation.core.CoreNavHost
 import com.emelyanov.vegocity.shared.presentation.components.FlexScaffold
 import com.example.compose.VegoCityTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
+import dagger.hilt.android.AndroidEntryPoint
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
 
 @ExperimentalAnimationApi
@@ -38,14 +40,16 @@ import dev.chrisbanes.snapper.ExperimentalSnapperApi
 @ExperimentalPagerApi
 @ExperimentalMaterial3Api
 @ExperimentalMaterialApi
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.Theme_VegoCityCompose)
         setContent {
             VegoCityTheme {
-                OrderRegistrationScreen()
-                //MainScreen()
+                val coreNavController = rememberNavController()
+
+                CoreNavHost(coreNavController = coreNavController)
             }
         }
     }

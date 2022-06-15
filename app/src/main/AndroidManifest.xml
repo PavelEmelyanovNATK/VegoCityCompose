@@ -4,6 +4,7 @@
     package="com.emelyanov.vegocity">
 
     <application
+        android:name=".VegoApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -16,7 +17,6 @@
         <activity
             android:name=".modules.core.presentation.MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.VegoCityCompose.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

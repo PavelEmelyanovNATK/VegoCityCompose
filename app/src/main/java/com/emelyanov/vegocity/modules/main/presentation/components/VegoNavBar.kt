@@ -24,12 +24,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.compose.VegoCityTheme
 import com.emelyanov.vegocity.R
 import com.emelyanov.vegocity.navigation.main.MainDestinations
+import com.emelyanov.vegocity.navigation.main.MainNavHolder
 import kotlinx.coroutines.launch
 
 const val NAV_BAR_HEIGHT = 80
@@ -42,6 +44,8 @@ fun VegoNavBar(
     onCartClick: () -> Unit
 ) {
     val backStackEntry = mainNavController.currentBackStackEntryAsState()
+
+    val mainNavHolder: MainNavHolder = hiltViewModel()
 
     Surface(
         modifier = modifier.fillMaxSize(),
@@ -62,7 +66,7 @@ fun VegoNavBar(
                     caption = "Каталог",
                     isSelected = { backStackEntry.value?.destination?.route == MainDestinations.Catalog.route },
                     onClick = {
-                        mainNavController.navigate(MainDestinations.Catalog.route)
+                        mainNavHolder.mainNavProvider.requestNavigate(MainDestinations.Catalog)
                     }
                 )
 
@@ -72,7 +76,7 @@ fun VegoNavBar(
                     caption = "Избранное",
                     isSelected = { backStackEntry.value?.destination?.route == MainDestinations.Favorites.route },
                     onClick = {
-                        mainNavController.navigate(MainDestinations.Favorites.route)
+                        mainNavHolder.mainNavProvider.requestNavigate(MainDestinations.Favorites)
                     }
                 )
 
@@ -82,7 +86,7 @@ fun VegoNavBar(
                     caption = "О нас",
                     isSelected = { backStackEntry.value?.destination?.route == MainDestinations.AboutUs.route },
                     onClick = {
-                        mainNavController.navigate(MainDestinations.AboutUs.route)
+                        mainNavHolder.mainNavProvider.requestNavigate(MainDestinations.AboutUs)
                     }
                 )
             }
