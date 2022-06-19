@@ -1,21 +1,18 @@
 package com.emelyanov.vegocity.modules.main.modules.catalog.domain
 
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.emelyanov.vegocity.modules.main.modules.catalog.domain.models.Category
 import com.emelyanov.vegocity.modules.main.modules.catalog.domain.models.NewProduct
 import com.emelyanov.vegocity.modules.main.modules.catalog.domain.models.Product
-import com.emelyanov.vegocity.modules.main.modules.catalog.domain.usecase.GetCategoriesUseCase
-import com.emelyanov.vegocity.modules.main.modules.catalog.domain.usecase.GetNewProductsUseCase
-import com.emelyanov.vegocity.modules.main.modules.catalog.domain.usecase.GetProductsUseCase
-import com.emelyanov.vegocity.modules.main.modules.catalog.domain.usecase.GroupProductsUseCase
+import com.emelyanov.vegocity.modules.main.modules.catalog.domain.usecase.*
 import com.emelyanov.vegocity.shared.domain.di.BaseStateViewModel
+import com.emelyanov.vegocity.shared.domain.usecases.GetCategoriesUseCase
+import com.emelyanov.vegocity.shared.domain.usecases.GroupProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,6 +26,7 @@ constructor(
     private val getNewProducts: GetNewProductsUseCase,
     private val getProducts: GetProductsUseCase,
     private val groupProducts: GroupProductsUseCase,
+    private val navigateToDetails: NavigateToDetailsUseCase
 ) : BaseStateViewModel<CatalogViewModel.ViewState>(
     ViewState.Default(
         productsViewState = ProductsViewState.Loading,
@@ -38,25 +36,14 @@ constructor(
     private val _searchField = MutableStateFlow("")
     val searchField: StateFlow<String> = _searchField
 
-    private var currentTimerValue = 2000
+    private val waitingMillis = 500
     private var timer: Job? = null
-    private fun reloadTimer(onComplete: suspend () -> Unit) {
-        if(timer != null && timer?.isActive == true) timer?.cancel()
-        currentTimerValue = 2000
-        timer = viewModelScope.launch {
-            while(currentTimerValue > 0) {
-                currentTimerValue -= 100
-                delay(100)
-            }
-            onComplete()
-        }
-    }
 
     init {
         reloadToDefault()
     }
 
-    private fun reloadToDefault() {
+    fun reloadToDefault() {
         updateState {
             viewStateLoading()
         }
@@ -80,7 +67,7 @@ constructor(
         viewModelScope.launch {
             try {
                 val categories = getCategories()
-                val products = getProducts()
+                val products = getProducts(searchFilter = searchField.value)
                 val groupedProducts = groupProducts(categories, products)
 
                 updateState { oldState ->
@@ -107,35 +94,63 @@ constructor(
                             productsViewState = ProductsViewState.Error("Ошибка")
                         )
                     else
-                        ViewState.Default(
-                            productsViewState = ProductsViewState.Error("Ошибка"),
-                            newProductsViewState = NewProductsViewState.Loading
+                        ViewState.Filter(
+                            productsViewState = ProductsViewState.Error("Ошибка")
                         )
                 }
             }
         }
     }
 
-    private fun getGroupedProducts(): GroupedProducts {
-        val categories = getCategories()
-        val products = getProducts()
-        return groupProducts(categories, products)
+    fun onProductClick(id: String) = navigateToDetails(id)
+
+    private fun reloadTimer(onComplete: suspend () -> Unit) {
+        if(timer != null && timer?.isActive == true) timer?.cancel()
+
+        timer = viewModelScope.launch {
+            var currentTimerValue = waitingMillis
+            while(currentTimerValue > 0) {
+                currentTimerValue -= 100
+                delay(100)
+            }
+            onComplete()
+        }
     }
 
-    private fun reloadWithFilter(
-        productsViewState: ProductsViewState.Presentation,
+    private suspend fun reloadWithFilter(
+        productsViewState: ProductsViewState,
         searchField: String
     ) {
-        if(productsViewState.categories.any { it.isSelected } || searchField.isNotEmpty()) {
-            updateState {
-                ViewState.Filter(
-                    productsViewState = productsViewState.copy(
-                        products = getGroupedProducts()
-                    )
-                )
+        _viewState.value = viewStateLoading()
+
+        viewModelScope.launch {
+            delay(1000)
+            if(productsViewState is ProductsViewState.Error) {
+                reloadToDefault()
+            } else if(productsViewState is ProductsViewState.Presentation) {
+                if(productsViewState.categories.any { it.isSelected } || searchField.isNotEmpty()) {
+                    updateState {
+                        val categories = getCategories()
+
+                        val newCategories = categories.map { curCategory ->
+                            val prevCategory = productsViewState.categories.find { it.id == curCategory.id } ?: return@map curCategory
+                            curCategory.copy(isSelected = prevCategory.isSelected)
+                        }
+
+                        val products = getProducts(newCategories.filter { it.isSelected }, searchField)
+
+                        val groupedProducts = groupProducts(newCategories, products)
+                        ViewState.Filter(
+                            productsViewState = ProductsViewState.Presentation(
+                                categories = newCategories,
+                                products = groupedProducts
+                            )
+                        )
+                    }
+                } else {
+                    reloadToDefault()
+                }
             }
-        } else {
-            reloadToDefault()
         }
     }
 
@@ -145,11 +160,9 @@ constructor(
         reloadTimer {
             when(val oldState = _viewState.value)  {
                 is ViewState.Filter -> {
-                    if(oldState.productsViewState !is ProductsViewState.Presentation) return@reloadTimer
                     reloadWithFilter(oldState.productsViewState, _searchField.value)
                 }
                 is ViewState.Default -> {
-                    if(oldState.productsViewState !is ProductsViewState.Presentation) return@reloadTimer
                     reloadWithFilter(oldState.productsViewState, _searchField.value)
                 }
             }
@@ -160,11 +173,13 @@ constructor(
         productsViewState: ProductsViewState.Presentation,
         categoryId: String
     ) : ProductsViewState.Presentation? {
-        val curCategory = productsViewState.categories.find { it.id == categoryId } ?: return null
+        val clickedCategory = productsViewState.categories.find { it.id == categoryId } ?: return null
 
-        productsViewState.categories.toMutableList()
-        val newCategories = productsViewState.categories.toMutableList().apply {
-            set(indexOf(curCategory), curCategory.copy(isSelected = !curCategory.isSelected))
+        val categories = productsViewState.categories
+
+        val newCategories = categories.map { curCategory ->
+            val prevCategory = productsViewState.categories.find { it.id == curCategory.id } ?: return@map curCategory
+            curCategory.copy(isSelected = if(curCategory.id == clickedCategory.id) !clickedCategory.isSelected else prevCategory.isSelected)
         }
 
         return productsViewState.copy(
@@ -173,32 +188,30 @@ constructor(
     }
 
     fun categoryClicked(categoryId: String) {
-        when (val oldState = _viewState.value) {
-            is ViewState.Default -> {
-                updateState {
-                    ViewState.Filter(
-                        productsViewState = ProductsViewState.Loading
-                    )
+        viewModelScope.launch {
+            when (val oldState = _viewState.value) {
+                is ViewState.Default -> {
+                    if(oldState.productsViewState !is ProductsViewState.Presentation) return@launch
+
+                    val newProductsState = changeCategoryMark(oldState.productsViewState, categoryId) ?: return@launch
+
+                    _viewState.value = oldState.copy(newProductsState)
+
+                    reloadTimer {
+                        reloadWithFilter(newProductsState, searchField.value)
+                    }
                 }
+                is ViewState.Filter -> {
+                    if(oldState.productsViewState !is ProductsViewState.Presentation) return@launch
 
-                if(oldState.productsViewState !is ProductsViewState.Presentation) return
+                    val newProductsState = changeCategoryMark(oldState.productsViewState, categoryId) ?: return@launch
 
-                val newProductsState = changeCategoryMark(oldState.productsViewState, categoryId) ?: return
+                    _viewState.value = oldState.copy(newProductsState)
 
-                reloadWithFilter(newProductsState, searchField.value)
-            }
-            is ViewState.Filter -> {
-                updateState {
-                    ViewState.Filter(
-                        productsViewState = ProductsViewState.Loading
-                    )
+                    reloadTimer {
+                        reloadWithFilter(newProductsState, searchField.value)
+                    }
                 }
-
-                if(oldState.productsViewState !is ProductsViewState.Presentation) return
-
-                val newProductsState = changeCategoryMark(oldState.productsViewState, categoryId) ?: return
-
-                reloadWithFilter(newProductsState, searchField.value)
             }
         }
     }

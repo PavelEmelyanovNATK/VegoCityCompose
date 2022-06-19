@@ -1,4 +1,4 @@
-package com.emelyanov.vegocity.modules.main.modules.catalog.domain.usecase
+package com.emelyanov.vegocity.shared.domain.usecases
 
 import com.emelyanov.vegocity.modules.main.modules.catalog.domain.models.Category
 import com.emelyanov.vegocity.modules.main.modules.catalog.domain.models.Product

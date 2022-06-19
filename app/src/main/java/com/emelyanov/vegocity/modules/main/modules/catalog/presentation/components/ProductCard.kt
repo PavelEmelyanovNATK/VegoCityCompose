@@ -2,6 +2,7 @@ package com.emelyanov.vegocity.modules.main.modules.catalog.presentation.compone
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
@@ -24,11 +25,14 @@ fun ProductCard(
     modifier: Modifier = Modifier,
     title: String,
     price: Int,
-    isNew: Boolean
+    isNew: Boolean,
+    onClick: () -> Unit
 ) {
     Box(
         modifier = modifier
+            .clip(RoundedCornerShape(CORNER_RADIUS))
             .height(PRODUCT_CARD_HEIGHT)
+            .clickable(onClick = onClick)
     ) {
         Image(
             modifier = Modifier

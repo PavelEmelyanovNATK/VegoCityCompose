@@ -77,6 +77,7 @@ dependencies {
     val accompanist_version: String by rootProject.extra
     implementation("com.google.accompanist:accompanist-pager:$accompanist_version")
     implementation("com.google.accompanist:accompanist-flowlayout:$accompanist_version")
+    implementation("com.google.accompanist:accompanist-placeholder:$accompanist_version")
 
     //Flinger
     val flinger_version: String by rootProject.extra

@@ -115,7 +115,7 @@ fun ProductDetailsScreen(
                             .weight(1f)
                             .verticalScroll(
                                 state = rememberScrollState(),
-                                flingBehavior = StockFlingBehaviours.smoothScroll()
+                                flingBehavior = StockFlingBehaviours.getAndroidNativeScroll()
                             )
                     ) {
                         Text(
@@ -166,7 +166,6 @@ fun ProductDetailsScreen(
                             }
                         }
 
-                        Spacer(Modifier.height(NAV_BAR_HEIGHT.dp))
                         Spacer(Modifier.height(18.dp))
                     }
                 }

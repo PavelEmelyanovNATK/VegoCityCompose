@@ -27,10 +27,16 @@ import com.emelyanov.vegocity.modules.main.modules.catalog.presentation.componen
 @Composable
 fun FavoriteCard(
     modifier: Modifier = Modifier,
+    title: String,
+    price: Int,
+    onProductClick: () -> Unit,
+    onDeleteClick: () -> Unit,
 ) {
     Box(
         modifier = modifier
+            .clip(RoundedCornerShape(CORNER_RADIUS))
             .height(PRODUCT_CARD_HEIGHT)
+            .clickable(onClick = onProductClick)
     ) {
         Image(
             modifier = Modifier
@@ -60,7 +66,7 @@ fun FavoriteCard(
                     modifier = Modifier
                         .weight(1f)
                         .padding(start = 14.dp, top = 8.dp),
-                    text = "Tiasdasdasdasdasdasdasdassasdasdasdtle",
+                    text = title,
                     style = MaterialTheme.typography.labelLarge
                         .copy(color = MaterialTheme.colorScheme.onSecondaryContainer),
                     overflow = TextOverflow.Ellipsis,
@@ -70,7 +76,7 @@ fun FavoriteCard(
                 Text(
                     modifier = Modifier
                         .padding(start = 14.dp, bottom = 8.dp),
-                    text = "123142",
+                    text = price.toString(),
                     style = MaterialTheme.typography.labelMedium
                         .copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
                 )

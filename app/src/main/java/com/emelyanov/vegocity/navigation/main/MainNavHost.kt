@@ -17,6 +17,7 @@ import androidx.navigation.compose.composable
 import com.emelyanov.vegocity.modules.main.modules.catalog.domain.CatalogViewModel
 import com.emelyanov.vegocity.modules.main.modules.catalog.presentation.CatalogScreen
 import com.emelyanov.vegocity.modules.main.modules.favorites.presentation.FavoritesScreen
+import com.emelyanov.vegocity.modules.main.modules.favorites.presentation.domain.FavoritesViewModel
 import com.emelyanov.vegocity.modules.main.modules.info.presentation.InfoScreen
 import com.emelyanov.vegocity.navigation.core.CoreNavHolder
 import com.emelyanov.vegocity.shared.utils.observeAsState
@@ -66,13 +67,27 @@ fun MainNavHost(
                 viewState = viewState.value,
                 searchFieldValue = searchField.value,
                 onSearchChange = viewModel::searchFiledChanged,
-                onCategoryClick = viewModel::categoryClicked
+                onCategoryClick = viewModel::categoryClicked,
+                onRefresh = viewModel::reloadToDefault,
+                onProductClick = viewModel::onProductClick
             )
         }
         composable(
             route = MainDestinations.Favorites.route
         ) {
-            FavoritesScreen()
+            val viewModel: FavoritesViewModel = hiltViewModel()
+            val viewState = viewModel.viewState.collectAsState()
+            val searchField = viewModel.searchField.collectAsState()
+
+            FavoritesScreen(
+                viewState = viewState.value,
+                searchField = searchField.value,
+                onSearchChanged = viewModel::searchFiledChanged,
+                onCategoryClick = viewModel::categoryClicked,
+                onProductClick = viewModel::onProductClick,
+                onRefresh = viewModel::reloadToDefault,
+                onDeleteClick = {  }
+            )
         }
         composable(
             route = MainDestinations.AboutUs.route

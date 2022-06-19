@@ -1,4 +1,4 @@
-package com.emelyanov.vegocity.modules.main.modules.catalog.domain.usecase
+package com.emelyanov.vegocity.shared.domain.usecases
 
 import com.emelyanov.vegocity.modules.main.modules.catalog.domain.models.Category
 import javax.inject.Inject
@@ -22,6 +22,22 @@ constructor(
             Category(
                 id = "c3",
                 name = "Category 3"
+            ),
+            Category(
+                id = "c4",
+                name = "Category 4"
+            ),
+            Category(
+                id = "c5",
+                name = "Category 5"
+            ),
+            Category(
+                id = "c6",
+                name = "Category 6"
+            ),
+            Category(
+                id = "c7",
+                name = "Category 7"
             ),
         )
     }
