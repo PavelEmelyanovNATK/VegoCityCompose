@@ -29,23 +29,15 @@ import com.emelyanov.vegocity.R
 fun VerticalVegoCounter(
     modifier: Modifier = Modifier,
     value: Int,
-    onIncrement: () -> Unit,
-    onDecrement: () -> Unit
+    onIncrement: (Int) -> Unit,
+    onDecrement: (Int) -> Unit
 ) {
     val outlineColor = MaterialTheme.colorScheme.outline
     val outlineWidth = with(LocalDensity.current) { 2.dp.toPx() }
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(4.dp))
-            .background(MaterialTheme.colorScheme.surface)
-            .drawBehind {
-//                drawRoundRect(
-//                    color = outlineColor,
-//                    style = Stroke(
-//                        width = outlineWidth
-//                    )
-//                )
-            },
+            .background(MaterialTheme.colorScheme.surface),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
@@ -54,7 +46,7 @@ fun VerticalVegoCounter(
                 .height(20.dp)
                 .clip(RoundedCornerShape(4.dp))
                 .background(MaterialTheme.colorScheme.tertiary )
-                .clickable { onIncrement() },
+                .clickable { onIncrement(value + 1) },
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -78,11 +70,10 @@ fun VerticalVegoCounter(
                 .height(20.dp)
                 .clip(RoundedCornerShape(4.dp))
                 .background(MaterialTheme.colorScheme.tertiary)
-                .clickable { onDecrement() },
+                .clickable { onDecrement(value - 1) },
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                //modifier = Modifier.size(8.dp),
                 painter = painterResource(R.drawable.ic_minus),
                 contentDescription = "Minus icon",
                 tint = MaterialTheme.colorScheme.onTertiary
@@ -96,23 +87,13 @@ fun VerticalVegoCounter(
 fun HorizontalVegoCounter(
     modifier: Modifier = Modifier,
     value: Int,
-    onIncrement: () -> Unit,
-    onDecrement: () -> Unit,
+    onIncrement: (Int) -> Unit,
+    onDecrement: (Int) -> Unit,
 ) {
-    val outlineColor = MaterialTheme.colorScheme.outline
-    val outlineWidth = with(LocalDensity.current) { 1.dp.toPx() }
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant)
-            .drawBehind {
-//                drawRoundRect(
-//                    color = outlineColor,
-//                    style = Stroke(
-//                        width = outlineWidth
-//                    )
-//                )
-            },
+            .background(MaterialTheme.colorScheme.surfaceVariant),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
@@ -121,7 +102,7 @@ fun HorizontalVegoCounter(
                 .height(30.dp)
                 .clip(RoundedCornerShape(8.dp))
                 .background(MaterialTheme.colorScheme.tertiary)
-                .clickable { onDecrement() },
+                .clickable { onDecrement(value - 1) },
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -144,7 +125,7 @@ fun HorizontalVegoCounter(
                 .height(30.dp)
                 .clip(RoundedCornerShape(8.dp))
                 .background(MaterialTheme.colorScheme.tertiary)
-                .clickable { onIncrement() },
+                .clickable { onIncrement(value + 1) },
             contentAlignment = Alignment.Center
         ) {
             Icon(

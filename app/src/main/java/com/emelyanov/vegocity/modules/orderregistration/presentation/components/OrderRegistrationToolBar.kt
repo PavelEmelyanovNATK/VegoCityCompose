@@ -22,7 +22,8 @@ import com.emelyanov.vegocity.shared.utils.TOOL_BAR_HEIGHT
 
 @Composable
 fun OrderRegistrationToolBar(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit
 ) {
     Row(
         modifier = modifier
@@ -36,7 +37,7 @@ fun OrderRegistrationToolBar(
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = rememberRipple(false, 24.dp),
-                    onClick = {  }
+                    onClick = onBackClick
                 ),
             painter = painterResource(id = R.drawable.ic_arrow_back),
             contentDescription = "Back button",

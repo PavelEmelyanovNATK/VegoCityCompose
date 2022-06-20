@@ -88,7 +88,7 @@ fun FavoriteCard(
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = rememberRipple(false, 24.dp),
-                        onClick = {  }
+                        onClick = onDeleteClick
                     ),
                 painter = painterResource(R.drawable.ic_delete),
                 contentDescription = "Delete icon",
