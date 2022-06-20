@@ -20,12 +20,10 @@ import com.emelyanov.vegocity.modules.main.modules.favorites.presentation.Favori
 import com.emelyanov.vegocity.modules.main.modules.favorites.presentation.domain.FavoritesViewModel
 import com.emelyanov.vegocity.modules.main.modules.info.presentation.InfoScreen
 import com.emelyanov.vegocity.navigation.core.CoreNavHolder
-import com.emelyanov.vegocity.shared.utils.observeAsState
 import com.google.accompanist.pager.ExperimentalPagerApi
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-@ExperimentalCoroutinesApi
 @ExperimentalAnimationApi
 @ExperimentalSnapperApi
 @ExperimentalPagerApi
@@ -42,11 +40,13 @@ fun MainNavHost(
             mainNavHolder.mainNavProvider.observeNavigationFlow(this@repeatOnLifecycle) { destination ->
                 destination ?: return@observeNavigationFlow
 
-                if(destination == MainDestinations.PopBack) mainNavController.popBackStack()
-                mainNavController.navigate(destination.route) {
-                    launchSingleTop = true
-                    popUpTo(mainNavController.graph.startDestinationId)
-                }
+                if(destination == MainDestinations.PopBack)
+                    mainNavController.popBackStack()
+                else
+                    mainNavController.navigate(destination.route) {
+                        launchSingleTop = true
+                        popUpTo(mainNavController.graph.startDestinationId)
+                    }
             }
         }
     }

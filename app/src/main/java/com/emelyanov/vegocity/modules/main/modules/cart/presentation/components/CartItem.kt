@@ -30,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -99,19 +100,21 @@ private const val OVERLAP_OFFSET = 16f
 @ExperimentalMaterialApi
 fun CartItem(
     modifier: Modifier = Modifier,
+    title: String,
+    price: Int,
+    count: Int,
     onDismiss: () -> Unit,
-    //dismissThresholds: (DismissDirection) -> ThresholdConfig = { FractionalThreshold(0.5f) },
+    onCountChange: (Int) -> Unit
 ) = BoxWithConstraints(
     modifier
         .fillMaxWidth()
         .height(80.dp)
 ) {
     val width = with(LocalDensity.current) { -IMAGE_WIDTH.dp.toPx() + OVERLAP_OFFSET.dp.toPx() - 1.dp.toPx() }
-    val state = rememberCartDismissState(initialValue = Default) {
-        if(it == Dismissed) {
-            onDismiss()
-        }
-        true
+    val state = rememberCartDismissState(initialValue = Default) { true }
+
+    if(state.currentValue == Dismissed) {
+        onDismiss()
     }
 
     val anchors = mutableMapOf(
@@ -171,7 +174,7 @@ fun CartItem(
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .padding(18.dp),
-                text = "Title",
+                text = title,
                 style = MaterialTheme.typography.labelLarge
                     .copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
             )
@@ -180,7 +183,7 @@ fun CartItem(
                 modifier = Modifier
                     .align(Alignment.BottomStart)
                     .padding(18.dp),
-                text = "111111",
+                text = "$price",
                 style = MaterialTheme.typography.labelMedium
                     .copy(color = MaterialTheme.colorScheme.onSurfaceVariant)
             )
@@ -189,9 +192,9 @@ fun CartItem(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .padding(end = 18.dp),
-                value = 12,
-                onIncrement = { /*TODO*/ },
-                onDecrement = {}
+                value = count,
+                onIncrement = { onCountChange(it) },
+                onDecrement = { onCountChange(it) }
             )
         }
     }

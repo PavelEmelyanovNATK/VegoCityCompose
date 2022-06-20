@@ -5,6 +5,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
+    id("kotlinx-serialization")
 }
 
 android {
@@ -91,4 +92,12 @@ dependencies {
 
     //Coil
     implementation("io.coil-kt:coil-compose:2.1.0")
+
+    //Retrofit
+    val retrofit_version: String by rootProject.extra
+    implementation("com.squareup.retrofit2:retrofit:$retrofit_version")
+    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
+
+    //Kotlin Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.3")
 }
