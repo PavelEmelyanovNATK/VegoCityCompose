@@ -22,16 +22,12 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.emelyanov.vegocity.R
-import com.emelyanov.vegocity.modules.main.modules.catalog.presentation.components.ProductCard
-import com.emelyanov.vegocity.shared.presentation.components.CategoriesMenu
 import com.emelyanov.vegocity.modules.main.modules.catalog.presentation.components.SearchFilterToolBar
 import com.emelyanov.vegocity.modules.main.modules.favorites.presentation.components.FavoriteCard
-import com.emelyanov.vegocity.modules.main.modules.favorites.presentation.domain.FavoritesViewModel
+import com.emelyanov.vegocity.modules.main.modules.favorites.domain.FavoritesViewModel
 import com.emelyanov.vegocity.modules.main.presentation.components.NAV_BAR_HEIGHT
-import com.emelyanov.vegocity.shared.presentation.components.BottomBarOffset
-import com.emelyanov.vegocity.shared.presentation.components.SwipeableIndicator
-import com.emelyanov.vegocity.shared.presentation.components.VegoChip
-import com.emelyanov.vegocity.shared.utils.TOOL_BAR_HEIGHT
+import com.emelyanov.vegocity.shared.domain.utils.TOOL_BAR_HEIGHT
+import com.emelyanov.vegocity.shared.presentation.components.*
 import com.example.compose.smallPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.placeholder.PlaceholderHighlight
@@ -98,7 +94,7 @@ fun FavoritesScreen(
         },
         frontLayerContent = {
             if(viewState is FavoritesViewModel.ViewState.Error) {
-                ErrorBlock(
+                ErrorStateView(
                     message = viewState.message,
                     onRefresh = onRefresh
                 )
@@ -325,48 +321,6 @@ private fun LazyGridScope.productsBlock(
                         }
                     )
                 }
-            }
-        }
-    }
-}
-
-@Composable
-private fun ErrorBlock(
-    modifier: Modifier = Modifier,
-    message: String,
-    onRefresh: () -> Unit
-) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(18.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_error),
-                contentDescription = "Error icon",
-                tint = MaterialTheme.colorScheme.error
-            )
-
-            Text(
-                text = message,
-                style = MaterialTheme.typography.labelLarge
-                    .copy(MaterialTheme.colorScheme.error)
-            )
-
-            Button(
-                onClick = { onRefresh() },
-                contentPadding = ButtonDefaults.smallPadding
-            ) {
-                Text(
-                    text = "Обновить",
-                    style = MaterialTheme.typography.labelLarge
-                        .copy(MaterialTheme.colorScheme.onPrimary)
-                )
             }
         }
     }

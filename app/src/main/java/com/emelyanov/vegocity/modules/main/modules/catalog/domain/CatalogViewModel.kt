@@ -1,11 +1,13 @@
 package com.emelyanov.vegocity.modules.main.modules.catalog.domain
 
+import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.emelyanov.vegocity.modules.main.modules.catalog.domain.models.Category
 import com.emelyanov.vegocity.modules.main.modules.catalog.domain.models.NewProduct
-import com.emelyanov.vegocity.modules.main.modules.catalog.domain.models.Product
+import com.emelyanov.vegocity.modules.main.modules.catalog.domain.models.ViewProduct
 import com.emelyanov.vegocity.modules.main.modules.catalog.domain.usecase.*
-import com.emelyanov.vegocity.shared.domain.di.BaseStateViewModel
+import com.emelyanov.vegocity.shared.domain.BaseStateViewModel
+import com.emelyanov.vegocity.shared.domain.models.RequestResult
+import com.emelyanov.vegocity.shared.domain.models.view.ViewCategory
 import com.emelyanov.vegocity.shared.domain.usecases.GetCategoriesUseCase
 import com.emelyanov.vegocity.shared.domain.usecases.GroupProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -16,7 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-typealias GroupedProducts = Map<String, List<Product>>
+typealias GroupedProducts = Map<String, List<ViewProduct>>
 
 @HiltViewModel
 class CatalogViewModel
@@ -65,39 +67,26 @@ constructor(
         }
 
         viewModelScope.launch {
-            try {
-                val categories = getCategories()
-                val products = getProducts(searchFilter = searchField.value)
-                val groupedProducts = groupProducts(categories, products)
+            val categories = getCategories().checkForError() ?: return@launch
+            val products = getProducts(searchFilter = searchField.value).checkForError() ?: return@launch
+            val groupedProducts = groupProducts(categories, products)
 
-                updateState { oldState ->
-                    if(oldState is ViewState.Default)
-                        oldState.copy(
-                            productsViewState = ProductsViewState.Presentation(
-                                categories = categories,
-                                products = groupedProducts
-                            )
+            updateState { oldState ->
+                if(oldState is ViewState.Default)
+                    oldState.copy(
+                        productsViewState = ProductsViewState.Presentation(
+                            categories = categories,
+                            products = groupedProducts
                         )
-                    else
-                        ViewState.Default(
-                            productsViewState = ProductsViewState.Presentation(
-                                categories = categories,
-                                products = groupedProducts
-                            ),
-                            newProductsViewState = NewProductsViewState.Loading
-                        )
-                }
-            } catch (ex: Exception) {
-                updateState { oldState ->
-                    if(oldState is ViewState.Default)
-                        oldState.copy(
-                            productsViewState = ProductsViewState.Error("Ошибка")
-                        )
-                    else
-                        ViewState.Filter(
-                            productsViewState = ProductsViewState.Error("Ошибка")
-                        )
-                }
+                    )
+                else
+                    ViewState.Default(
+                        productsViewState = ProductsViewState.Presentation(
+                            categories = categories,
+                            products = groupedProducts
+                        ),
+                        newProductsViewState = NewProductsViewState.Loading
+                    )
             }
         }
     }
@@ -124,20 +113,19 @@ constructor(
         _viewState.value = viewStateLoading()
 
         viewModelScope.launch {
-            delay(1000)
             if(productsViewState is ProductsViewState.Error) {
                 reloadToDefault()
             } else if(productsViewState is ProductsViewState.Presentation) {
                 if(productsViewState.categories.any { it.isSelected } || searchField.isNotEmpty()) {
                     updateState {
-                        val categories = getCategories()
+                        val categories = getCategories().checkForError() ?: return@launch
 
                         val newCategories = categories.map { curCategory ->
                             val prevCategory = productsViewState.categories.find { it.id == curCategory.id } ?: return@map curCategory
                             curCategory.copy(isSelected = prevCategory.isSelected)
                         }
 
-                        val products = getProducts(newCategories.filter { it.isSelected }, searchField)
+                        val products = getProducts(newCategories.filter { it.isSelected }, searchField).checkForError() ?: return@launch
 
                         val groupedProducts = groupProducts(newCategories, products)
                         ViewState.Filter(
@@ -221,6 +209,26 @@ constructor(
         newProductsViewState = NewProductsViewState.Loading
     )
 
+    private fun <T> RequestResult<T>.checkForError(): T? {
+        if(this is RequestResult.Error) {
+            updateState { oldState ->
+                when(oldState) {
+                    is ViewState.Default -> {
+                        oldState.copy(
+                            productsViewState = ProductsViewState.Error(message?:"")
+                        )
+                    }
+                    is ViewState.Filter -> {
+                        ViewState.Filter(
+                            productsViewState = ProductsViewState.Error(message?:"")
+                        )
+                    }
+                }
+            }
+            return null
+        } else return getSuccessResult().data
+    }
+
     sealed interface ViewState {
         data class Default(
             val productsViewState: ProductsViewState,
@@ -243,7 +251,7 @@ constructor(
         object  Loading : ProductsViewState
         data class Presentation(
             val products: GroupedProducts,
-            val categories: List<Category>
+            val categories: List<ViewCategory>
         ) : ProductsViewState
         object Empty : ProductsViewState
         data class Error(val message: String) : ProductsViewState

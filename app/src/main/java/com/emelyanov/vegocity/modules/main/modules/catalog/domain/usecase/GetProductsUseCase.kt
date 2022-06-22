@@ -1,68 +1,72 @@
 package com.emelyanov.vegocity.modules.main.modules.catalog.domain.usecase
 
-import com.emelyanov.vegocity.modules.main.modules.catalog.domain.models.Category
-import com.emelyanov.vegocity.modules.main.modules.catalog.domain.models.Product
+import com.emelyanov.vegocity.modules.main.modules.catalog.domain.models.ViewProduct
+import com.emelyanov.vegocity.modules.main.modules.catalog.domain.models.toViewProduct
+import com.emelyanov.vegocity.shared.domain.models.RequestResult
+import com.emelyanov.vegocity.shared.domain.models.view.ViewCategory
+import com.emelyanov.vegocity.shared.domain.services.productsrepo.IProductsRepository
+import com.emelyanov.vegocity.shared.domain.services.productsrepo.ProductsRepository
 import javax.inject.Inject
 
 
 private val products = listOf(
-    Product(
+    ViewProduct(
         id = "p1",
-        photoRef = "",
+        photoUrl = "",
         title = "Product 1",
         isNew = false,
         price = 1999,
         actualPrice = 1999,
         categoryId = "c1"
     ),
-    Product(
+    ViewProduct(
         id = "p2",
-        photoRef = "",
+        photoUrl = "",
         title = "Product 2",
         isNew = false,
         price = 1999,
         actualPrice = 1999,
         categoryId = "c1"
     ),
-    Product(
+    ViewProduct(
         id = "p3",
-        photoRef = "",
+        photoUrl = "",
         title = "Product 3",
         isNew = false,
         price = 1999,
         actualPrice = 1999,
         categoryId = "c1"
     ),
-    Product(
+    ViewProduct(
         id = "p4",
-        photoRef = "",
+        photoUrl = "",
         title = "Product 4",
         isNew = false,
         price = 1999,
         actualPrice = 1999,
         categoryId = "c2"
     ),
-    Product(
+    ViewProduct(
         id = "p5",
-        photoRef = "",
+        photoUrl = "",
         title = "Product 5",
         isNew = false,
         price = 1999,
         actualPrice = 1999,
         categoryId = "c2"
     ),
-    Product(
+    ViewProduct(
         id = "p6",
-        photoRef = "",
+        photoUrl = "",
         title = "Product 6",
         isNew = false,
         price = 1999,
         actualPrice = 1999,
         categoryId = "c2"
     ),
-    Product(
+    ViewProduct(
         id = "p7",
-        photoRef = "",
+        photoUrl = "",
         title = "Product 7",
         isNew = false,
         price = 1999,
@@ -74,14 +78,16 @@ private val products = listOf(
 class GetProductsUseCase
 @Inject
 constructor(
-
+    private val productsRepository: IProductsRepository
 ) {
-    operator fun invoke(categories: List<Category> = listOf(), searchFilter: String = "") : List<Product> {
-        return if(categories.isNotEmpty())
-            products.filter { p -> categories.any { c -> c.id == p.categoryId} && p.title.contains(searchFilter) }
-        else if(searchFilter.isNotEmpty())
-            products.filter { p ->  p.title.contains(searchFilter) }
-        else
-            products
+    suspend operator fun invoke(categories: List<ViewCategory> = listOf(), searchFilter: String = "") : RequestResult<List<ViewProduct>> {
+        return productsRepository.getProducts(
+            categories = categories.map { it.id.toInt() },
+            filter = searchFilter
+        ).map {
+            it.map {
+                it.toViewProduct()
+            }
+        }
     }
 }

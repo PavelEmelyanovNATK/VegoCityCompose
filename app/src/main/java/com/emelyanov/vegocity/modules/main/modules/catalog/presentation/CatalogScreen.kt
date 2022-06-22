@@ -1,10 +1,7 @@
 package com.emelyanov.vegocity.modules.main.modules.catalog.presentation
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -29,21 +26,17 @@ import androidx.compose.ui.unit.dp
 import com.emelyanov.vegocity.R
 import com.emelyanov.vegocity.modules.main.modules.catalog.domain.CatalogViewModel
 import com.emelyanov.vegocity.modules.main.modules.catalog.presentation.components.SearchFilterToolBar
-import com.emelyanov.vegocity.shared.presentation.components.CategoriesMenu
 import com.emelyanov.vegocity.modules.main.modules.catalog.presentation.components.NewProductsPager
 import com.emelyanov.vegocity.modules.main.modules.catalog.presentation.components.ProductCard
 import com.emelyanov.vegocity.modules.main.presentation.components.NAV_BAR_HEIGHT
-import com.emelyanov.vegocity.shared.presentation.components.BottomBarOffset
-import com.emelyanov.vegocity.shared.presentation.components.SwipeableIndicator
-import com.emelyanov.vegocity.shared.presentation.components.VegoChip
-import com.emelyanov.vegocity.shared.utils.TOOL_BAR_HEIGHT
+import com.emelyanov.vegocity.shared.domain.utils.TOOL_BAR_HEIGHT
+import com.emelyanov.vegocity.shared.presentation.components.*
 import com.example.compose.smallPadding
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.placeholder
 import com.google.accompanist.placeholder.shimmer
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
 typealias ViewState = CatalogViewModel.ViewState
@@ -343,7 +336,8 @@ private fun LazyGridScope.productsBlock(
                         isNew = false,
                         onClick = {
 
-                        }
+                        },
+                        imageUrl = ""
                     )
                 }
             }
@@ -371,51 +365,10 @@ private fun LazyGridScope.productsBlock(
                         isNew = it.isNew,
                         onClick = {
                             onProductClick(it.id)
-                        }
+                        },
+                        imageUrl = it.photoUrl
                     )
                 }
-            }
-        }
-    }
-}
-
-@Composable
-private fun ErrorBlock(
-    modifier: Modifier = Modifier,
-    message: String,
-    onRefresh: () -> Unit
-) {
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(18.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.ic_error),
-                contentDescription = "Error icon",
-                tint = MaterialTheme.colorScheme.error
-            )
-
-            Text(
-                text = message,
-                style = MaterialTheme.typography.labelLarge
-                    .copy(MaterialTheme.colorScheme.error)
-            )
-
-            Button(
-                onClick = { onRefresh() },
-                contentPadding = ButtonDefaults.smallPadding
-            ) {
-                Text(
-                    text = "Обновить",
-                    style = MaterialTheme.typography.labelLarge
-                        .copy(MaterialTheme.colorScheme.onPrimary)
-                )
             }
         }
     }
@@ -480,7 +433,7 @@ private fun DefaultScreenState(
                     key = "new_products"
                 ) {
                     if(viewState.newProductsViewState is NewProductsErrorVS) {
-                        ErrorBlock(
+                        ErrorStateView(
                             message = viewState.newProductsViewState.message,
                             onRefresh = onRefresh
                         )
@@ -502,7 +455,7 @@ private fun DefaultScreenState(
 
                 item("products") {
                     if(viewState.productsViewState is ProductsErrorVS){
-                        ErrorBlock(
+                        ErrorStateView(
                             modifier = Modifier.padding(bottom = NAV_BAR_HEIGHT.dp + 18.dp),
                             message = viewState.productsViewState.message,
                             onRefresh = onRefresh
@@ -543,7 +496,7 @@ private fun FilterScreenState(
     onProductClick: (String) -> Unit
 ) {
     if (viewState.productsViewState is ProductsErrorVS) {
-        ErrorBlock(
+        ErrorStateView(
             message = viewState.productsViewState.message,
             onRefresh = onRefresh
         )

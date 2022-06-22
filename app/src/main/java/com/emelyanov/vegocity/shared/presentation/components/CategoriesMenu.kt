@@ -1,5 +1,6 @@
 package com.emelyanov.vegocity.shared.presentation.components
 
+import android.view.View
 import androidx.compose.animation.*
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
@@ -11,7 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.emelyanov.vegocity.modules.main.modules.catalog.domain.models.Category
+import com.emelyanov.vegocity.shared.domain.models.view.ViewCategory
 import com.google.accompanist.flowlayout.FlowRow
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.fade
@@ -23,7 +24,7 @@ import com.google.accompanist.placeholder.shimmer
 @Composable
 fun CategoriesMenu(
     modifier: Modifier = Modifier,
-    categories: List<Category> = listOf(),
+    categories: List<ViewCategory> = listOf(),
     onCategoryClick: (String) -> Unit = {},
     isLoading: Boolean
 ) {

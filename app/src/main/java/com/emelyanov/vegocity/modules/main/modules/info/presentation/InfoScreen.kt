@@ -1,11 +1,7 @@
 package com.emelyanov.vegocity.modules.main.modules.info.presentation
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.material.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
@@ -18,8 +14,7 @@ import com.emelyanov.vegocity.R
 import com.emelyanov.vegocity.modules.main.modules.info.presentation.components.BackdropMenu
 import com.emelyanov.vegocity.modules.main.modules.info.presentation.components.DropdownToolBar
 import com.emelyanov.vegocity.shared.presentation.components.BottomBarOffset
-import com.emelyanov.vegocity.shared.presentation.components.BottomBarVisibility
-import com.emelyanov.vegocity.shared.utils.TOOL_BAR_HEIGHT
+import com.emelyanov.vegocity.shared.domain.utils.TOOL_BAR_HEIGHT
 import kotlinx.coroutines.launch
 
 @ExperimentalMaterialApi

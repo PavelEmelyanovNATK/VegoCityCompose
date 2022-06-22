@@ -1,6 +1,5 @@
 package com.emelyanov.vegocity.navigation.main
 
-import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.background
 import androidx.compose.material.ExperimentalMaterialApi
@@ -17,12 +16,10 @@ import androidx.navigation.compose.composable
 import com.emelyanov.vegocity.modules.main.modules.catalog.domain.CatalogViewModel
 import com.emelyanov.vegocity.modules.main.modules.catalog.presentation.CatalogScreen
 import com.emelyanov.vegocity.modules.main.modules.favorites.presentation.FavoritesScreen
-import com.emelyanov.vegocity.modules.main.modules.favorites.presentation.domain.FavoritesViewModel
+import com.emelyanov.vegocity.modules.main.modules.favorites.domain.FavoritesViewModel
 import com.emelyanov.vegocity.modules.main.modules.info.presentation.InfoScreen
-import com.emelyanov.vegocity.navigation.core.CoreNavHolder
 import com.google.accompanist.pager.ExperimentalPagerApi
 import dev.chrisbanes.snapper.ExperimentalSnapperApi
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @ExperimentalAnimationApi
 @ExperimentalSnapperApi

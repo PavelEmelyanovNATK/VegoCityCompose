@@ -1,13 +1,13 @@
-package com.emelyanov.vegocity.modules.main.modules.favorites.presentation.domain
+package com.emelyanov.vegocity.modules.main.modules.favorites.domain
 
-import android.view.View
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.emelyanov.vegocity.modules.main.modules.catalog.domain.CatalogViewModel
 import com.emelyanov.vegocity.modules.main.modules.catalog.domain.GroupedProducts
-import com.emelyanov.vegocity.modules.main.modules.catalog.domain.models.Category
 import com.emelyanov.vegocity.modules.main.modules.catalog.domain.usecase.GetProductsUseCase
 import com.emelyanov.vegocity.modules.main.modules.catalog.domain.usecase.NavigateToDetailsUseCase
-import com.emelyanov.vegocity.shared.domain.di.BaseStateViewModel
+import com.emelyanov.vegocity.shared.domain.BaseStateViewModel
+import com.emelyanov.vegocity.shared.domain.models.RequestResult
+import com.emelyanov.vegocity.shared.domain.models.view.ViewCategory
 import com.emelyanov.vegocity.shared.domain.usecases.GetCategoriesUseCase
 import com.emelyanov.vegocity.shared.domain.usecases.GroupProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -46,8 +46,8 @@ constructor(
 
         viewModelScope.launch {
             try {
-                val categories = getCategories()
-                val products = getProducts(searchFilter = searchField.value)
+                val categories = getCategories().checkForError() ?: return@launch
+                val products = getProducts(searchFilter = searchField.value).checkForError() ?: return@launch
                 val groupedProducts = groupProducts(categories, products)
 
                 updateState { oldState ->
@@ -92,14 +92,14 @@ constructor(
             } else if(oldState is ViewState.Presentation) {
                 if(oldState.categories.any { it.isSelected } || searchField.isNotEmpty()) {
                     updateState {
-                        val categories = getCategories()
+                        val categories = getCategories().checkForError() ?: return@launch
 
                         val newCategories = categories.map { curCategory ->
                             val prevCategory = oldState.categories.find { it.id == curCategory.id } ?: return@map curCategory
                             curCategory.copy(isSelected = prevCategory.isSelected)
                         }
 
-                        val products = getProducts(newCategories.filter { it.isSelected }, searchField)
+                        val products = getProducts(newCategories.filter { it.isSelected }, searchField).checkForError() ?: return@launch
 
                         val groupedProducts = groupProducts(newCategories, products)
                         ViewState.Presentation(
@@ -152,11 +152,22 @@ constructor(
         }
     }
 
+    private fun <T> RequestResult<T>.checkForError(): T? {
+        if(this is RequestResult.Error) {
+            updateState { oldState ->
+                ViewState.Error(
+                    message = message ?: ""
+                )
+            }
+            return null
+        } else return getSuccessResult().data
+    }
+
     sealed interface ViewState {
         object Loading : ViewState
         data class Presentation(
             val products: GroupedProducts,
-            val categories: List<Category>
+            val categories: List<ViewCategory>
         ) : ViewState
         data class Error(val message: String) : ViewState
     }

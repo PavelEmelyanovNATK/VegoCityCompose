@@ -1,7 +1,7 @@
 package com.emelyanov.vegocity.modules.orderregistration.domain
 
 import com.emelyanov.vegocity.modules.orderregistration.domain.usecases.PopBackUseCase
-import com.emelyanov.vegocity.shared.domain.di.BaseStateViewModel
+import com.emelyanov.vegocity.shared.domain.BaseStateViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

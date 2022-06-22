@@ -1,4 +1,4 @@
-package com.emelyanov.vegocity.shared.utils
+package com.emelyanov.vegocity.shared.domain.utils
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -16,14 +16,17 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.emelyanov.vegocity.modules.main.modules.catalog.presentation.CatalogScreen
 import com.emelyanov.vegocity.modules.main.modules.favorites.presentation.FavoritesScreen
 import com.emelyanov.vegocity.modules.main.modules.info.presentation.InfoScreen
 import com.emelyanov.vegocity.modules.main.presentation.MainScreen
 import com.emelyanov.vegocity.modules.orderregistration.domain.OrderRegistrationViewModel
 import com.emelyanov.vegocity.modules.orderregistration.presentation.OrderRegistrationScreen
+import com.emelyanov.vegocity.modules.productdetails.domain.ProductDetailsViewModel
 import com.emelyanov.vegocity.modules.productdetails.presentation.ProductDetailsScreen
 import com.emelyanov.vegocity.navigation.main.MainDestinations
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -66,9 +69,24 @@ fun CoreNavHost(
             MainScreen()
         }
         composable(
-            route = CoreDestinations.ProductDetails(null).route
+            route = CoreDestinations.ProductDetails(null).route,
+            arguments = listOf(navArgument("id") { type = NavType.StringType })
         ) {
-            ProductDetailsScreen()
+            val viewModel: ProductDetailsViewModel = hiltViewModel()
+            val viewState = viewModel.viewState.collectAsState()
+
+            val id = requireNotNull(it.arguments?.getString("id"))
+
+            LaunchedEffect(key1 = true) {
+                viewModel.loadInfo(id)
+            }
+
+            ProductDetailsScreen(
+                viewState = viewState.value,
+                onRefresh = {
+                    viewModel.loadInfo(id)
+                }
+            )
         }
         composable(
             route = CoreDestinations.OrderRegistration.route

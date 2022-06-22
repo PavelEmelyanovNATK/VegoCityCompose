@@ -1,7 +1,7 @@
 package com.emelyanov.vegocity.shared.domain.usecases
 
-import com.emelyanov.vegocity.modules.main.modules.catalog.domain.models.Category
-import com.emelyanov.vegocity.modules.main.modules.catalog.domain.models.Product
+import com.emelyanov.vegocity.modules.main.modules.catalog.domain.models.ViewProduct
+import com.emelyanov.vegocity.shared.domain.models.view.ViewCategory
 import javax.inject.Inject
 
 
@@ -11,10 +11,10 @@ constructor(
 
 ) {
     operator fun invoke(
-        categories: List<Category>,
-        products: List<Product>
-    ) : Map<String, List<Product>> {
-        val map = mutableMapOf<String, MutableList<Product>>()
+        categories: List<ViewCategory>,
+        products: List<ViewProduct>
+    ) : Map<String, List<ViewProduct>> {
+        val map = mutableMapOf<String, MutableList<ViewProduct>>()
 
         products.forEach { product ->
             val category = categories.find { it.id == product.categoryId }?.name

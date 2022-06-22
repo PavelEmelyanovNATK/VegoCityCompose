@@ -1,6 +1,5 @@
 package com.emelyanov.vegocity.modules.orderregistration.presentation.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Row
@@ -18,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.emelyanov.vegocity.R
-import com.emelyanov.vegocity.shared.utils.TOOL_BAR_HEIGHT
+import com.emelyanov.vegocity.shared.domain.utils.TOOL_BAR_HEIGHT
 
 @Composable
 fun OrderRegistrationToolBar(

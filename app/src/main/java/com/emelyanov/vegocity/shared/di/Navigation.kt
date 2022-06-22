@@ -1,4 +1,4 @@
-package com.emelyanov.vegocity.shared.domain.di
+package com.emelyanov.vegocity.shared.di
 
 import com.emelyanov.vegocity.navigation.core.CoreNavProvider
 import com.emelyanov.vegocity.navigation.main.MainNavProvider

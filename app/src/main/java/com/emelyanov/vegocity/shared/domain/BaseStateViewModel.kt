@@ -1,4 +1,4 @@
-package com.emelyanov.vegocity.shared.domain.di
+package com.emelyanov.vegocity.shared.domain
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -13,9 +13,8 @@ abstract class BaseStateViewModel<S>(
     protected val _viewState: MutableStateFlow<S> = MutableStateFlow(initialState)
     val viewState: StateFlow<S> = _viewState
 
-    fun updateState(block: (oldState: S) -> S?) {
-        val newState = block(_viewState.value)
-        Log.d(TAG, "" + (newState.hashCode() == _viewState.value.hashCode()))
-        _viewState.value = newState ?: return
+    protected inline fun updateState(block: (oldState: S) -> S?) {
+        val newState = block(_viewState.value) ?: return
+        _viewState.value = newState
     }
 }

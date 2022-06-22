@@ -1,12 +1,11 @@
 package com.emelyanov.vegocity.modules.main.modules.cart.domain
 
-import androidx.lifecycle.ViewModel
 import com.emelyanov.vegocity.modules.main.modules.cart.domain.models.CartItem
 import com.emelyanov.vegocity.modules.main.modules.cart.domain.usecases.DeleteAllCartProductsUseCase
 import com.emelyanov.vegocity.modules.main.modules.cart.domain.usecases.DeleteCartProductUseCase
 import com.emelyanov.vegocity.modules.main.modules.cart.domain.usecases.GetCartProductsUseCase
 import com.emelyanov.vegocity.modules.main.modules.cart.domain.usecases.NavigateToOrderUseCase
-import com.emelyanov.vegocity.shared.domain.di.BaseStateViewModel
+import com.emelyanov.vegocity.shared.domain.BaseStateViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

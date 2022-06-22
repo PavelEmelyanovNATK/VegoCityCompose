@@ -1,16 +1,14 @@
 package com.emelyanov.vegocity.shared.presentation.components
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.ScrollableState
 import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.gestures.scrollBy
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxScope
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -21,6 +19,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -52,8 +51,8 @@ fun DetailScreenBackdrop(
 ) {
     val pxHeight = with(LocalDensity.current) { backgroundHeight.toPx() }
     val anchors = mapOf(
-        0f to false,
-        pxHeight to true
+        pxHeight to true,
+        0f to false
     )
 
     val swipeProgress = when {
@@ -66,31 +65,38 @@ fun DetailScreenBackdrop(
     Box(
         modifier = modifier
             .background(backgroundColor)
+            .swipeable(
+                state = swipeableState,
+                anchors = anchors,
+                orientation = Orientation.Vertical,
+                resistance = null
+            )
     ) {
-        Box {
+        Box(
+//            modifier = Modifier.drawWithContent {
+//                drawRect(
+//                    backgroundScrimColor.copy(alpha = scrimAlpha)
+//                )
+//            }
+        ) {
             backgroundContent()
             Box(
                 modifier = modifier
                     .matchParentSize()
                     .drawBehind {
                         drawRect(
-                            backgroundScrimColor.copy(alpha = scrimAlpha)
+                            foregroundColor.copy(alpha = scrimAlpha)
                         )
                     }
             )
         }
 
+        val dpPadding = with(LocalDensity.current) { swipeableState.offset.value.toDp() }
         Surface(
             modifier = Modifier
                 .matchParentSize()
-                .swipeable(
-                    state = swipeableState,
-                    anchors = anchors,
-                    orientation = Orientation.Vertical,
-                    resistance = null
-                )
-                .offset { IntOffset(x = 0, y = swipeableState.offset.value.roundToInt()) }
-                .nestedScroll(swipeableState.PreUpPostDownNestedScrollConnection),
+                .padding(top = dpPadding)
+                .nestedScroll(swipeableState.PreUpPostDownNestedScrollConnection(anchors)),
             color = foregroundColor,
             shape = RoundedCornerShape(topEnd = backgroundCornerRadius, topStart = backgroundCornerRadius),
             content = foregroundContent
@@ -98,48 +104,51 @@ fun DetailScreenBackdrop(
     }
 }
 
+
+
 internal var minBound = Float.NEGATIVE_INFINITY
 
 @ExperimentalMaterialApi
-val <T> SwipeableState<T>.PreUpPostDownNestedScrollConnection: NestedScrollConnection
-    get() = object : NestedScrollConnection {
-        override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-            val delta = available.toFloat()
-            return if (delta < 0 && source == NestedScrollSource.Drag) {
-                performDrag(delta).toOffset()
-            } else {
-                Offset.Zero
-            }
-        }
-
-        override fun onPostScroll(
-            consumed: Offset,
-            available: Offset,
-            source: NestedScrollSource
-        ): Offset {
-            return if (source == NestedScrollSource.Drag) {
-                performDrag(available.toFloat()).toOffset()
-            } else {
-                Offset.Zero
-            }
-        }
-
-        override suspend fun onPreFling(available: Velocity): Velocity {
-            val toFling = Offset(available.x, available.y).toFloat()
-            return if (toFling < 0 && offset.value > minBound) {
-                performFling(velocity = toFling)
-                // since we go to the anchor with tween settling, consume all for the best UX
-                available
-            } else {
-                Velocity.Zero
-            }
-        }
-
-        override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
-            performFling(velocity = Offset(available.x, available.y).toFloat())
-            return available
+fun <T> SwipeableState<T>.PreUpPostDownNestedScrollConnection(anchors: Map<Float, T>): NestedScrollConnection
+        = object : NestedScrollConnection {
+    val minBound = anchors.keys.minOrNull() ?: Float.NEGATIVE_INFINITY
+    override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+        val delta = available.toFloat()
+        return if (delta < 0 && source == NestedScrollSource.Drag) {
+            performDrag(delta).toOffset()
+        } else {
+            Offset.Zero
         }
     }
+
+    override fun onPostScroll(
+        consumed: Offset,
+        available: Offset,
+        source: NestedScrollSource
+    ): Offset {
+        return if (source == NestedScrollSource.Drag) {
+            performDrag(available.toFloat()).toOffset()
+        } else {
+            Offset.Zero
+        }
+    }
+
+    override suspend fun onPreFling(available: Velocity): Velocity {
+        val toFling = Offset(available.x, available.y).toFloat()
+        return if (toFling < 0 && offset.value > minBound) {
+            performFling(velocity = toFling)
+            // since we go to the anchor with tween settling, consume all for the best UX
+            available
+        } else {
+            Velocity.Zero
+        }
+    }
+
+    override suspend fun onPostFling(consumed: Velocity, available: Velocity): Velocity {
+        performFling(velocity = Offset(available.x, available.y).toFloat())
+        return available
+    }
+}
 
 internal fun Float.toOffset(): Offset = Offset(0f, this)
 

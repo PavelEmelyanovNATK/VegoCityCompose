@@ -9,6 +9,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        create("release") {
+            storeFile = file("C:\\Users\\pemel\\Documents\\AndroidStudioKeys\\key_for_tests.jks")
+            storePassword = "Passw0rd"
+            keyAlias = "key_for_tests"
+            keyPassword = "Passw0rd"
+        }
+    }
     compileSdk = 32
 
     defaultConfig {
@@ -22,6 +30,7 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        signingConfig = signingConfigs.getByName("release")
     }
 
     buildTypes {

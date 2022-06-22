@@ -11,10 +11,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.emelyanov.vegocity.R
 
 internal val PRODUCT_CARD_HEIGHT = 150.dp
@@ -24,6 +28,7 @@ internal val CORNER_RADIUS = 16.dp
 fun ProductCard(
     modifier: Modifier = Modifier,
     title: String,
+    imageUrl: String,
     price: Int,
     isNew: Boolean,
     onClick: () -> Unit
@@ -34,12 +39,16 @@ fun ProductCard(
             .height(PRODUCT_CARD_HEIGHT)
             .clickable(onClick = onClick)
     ) {
-        Image(
+        AsyncImage(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(PRODUCT_CARD_HEIGHT / 2 + CORNER_RADIUS)
-                .clip(RoundedCornerShape(topStart = CORNER_RADIUS, topEnd = CORNER_RADIUS)),
-            painter = painterResource(R.drawable.test_image),
+                .clip(RoundedCornerShape(topStart = CORNER_RADIUS, topEnd = CORNER_RADIUS))
+                .background(Color.LightGray),
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(imageUrl)
+                .crossfade(true)
+                .build(),
             contentDescription = "Product image",
             contentScale = ContentScale.Crop
         )
