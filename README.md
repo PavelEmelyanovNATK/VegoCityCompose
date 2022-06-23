@@ -1,4 +1,4 @@
-#VEGO CITY
+# VEGO CITY
 Макет: https://www.figma.com/file/POyvKdWjP3NHYykiXX93Xv/?node-id=0%3A1
 
 ## Реализовано:
