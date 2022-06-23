@@ -20,6 +20,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.emelyanov.vegocity.modules.main.domain.MainViewModel
 import com.emelyanov.vegocity.modules.main.modules.catalog.presentation.CatalogScreen
 import com.emelyanov.vegocity.modules.main.modules.favorites.presentation.FavoritesScreen
 import com.emelyanov.vegocity.modules.main.modules.info.presentation.InfoScreen
@@ -66,7 +67,9 @@ fun CoreNavHost(
         composable(
             route = CoreDestinations.Main.route
         ) {
-            MainScreen()
+            val viewModel: MainViewModel = hiltViewModel()
+            val cartItemsCount = viewModel.cartItemsCount.collectAsState(0)
+            MainScreen(cartItemsCount = cartItemsCount.value)
         }
         composable(
             route = CoreDestinations.ProductDetails(null).route,

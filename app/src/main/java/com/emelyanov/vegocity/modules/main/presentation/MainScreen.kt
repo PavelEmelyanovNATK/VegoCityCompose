@@ -11,9 +11,7 @@ import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.material.swipeable
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,7 +37,7 @@ import kotlinx.coroutines.launch
 @ExperimentalMaterial3Api
 @Composable
 fun MainScreen(
-
+    cartItemsCount: Int
 ) {
     val mainNavController = rememberNavController()
     Box {
@@ -55,7 +53,8 @@ fun MainScreen(
                         coroutineScope.launch {
                             sheetState.show()
                         }
-                    }
+                    },
+                    cartItemsCount = cartItemsCount
                 )
             },
             sheetState = sheetState,
@@ -66,11 +65,14 @@ fun MainScreen(
                     }
                 }
 
-                if(sheetState.currentValue == ModalBottomSheetValue.Hidden && sheetState.offset.value != 0f || sheetState.currentValue != ModalBottomSheetValue.Hidden) {
-                    val viewModel: CartViewModel = hiltViewModel()
-                    val viewState = viewModel.viewState.collectAsState()
-                    ModalCartDialog(viewState = viewState.value)
-                } else Box(Modifier.size(10.dp))
+                val viewModel: CartViewModel = hiltViewModel()
+                val viewState = viewModel.viewState.collectAsState()
+
+                LaunchedEffect(key1 = sheetState.isVisible) {
+                    if(sheetState.isVisible) viewModel.open() else viewModel.close()
+                }
+
+                ModalCartDialog(viewState = viewState.value)
             }
         ) {
             MainNavHost(mainNavController = mainNavController)
@@ -89,6 +91,6 @@ fun MainScreen(
 @Preview
 private fun Preview() {
     VegoCityTheme {
-        MainScreen()
+        //MainScreen()
     }
 }

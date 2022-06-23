@@ -9,7 +9,7 @@ data class ViewProduct(
     val isNew: Boolean,
     val price: Int,
     val actualPrice: Int,
-    val categoryId: String,
+    val category: String,
 )
 
 fun Product.toViewProduct()
@@ -20,5 +20,5 @@ fun Product.toViewProduct()
     isNew = false,
     price = price.toInt(),
     actualPrice = price.toInt(),
-    categoryId = categoryId.toString()
+    category = category
 )

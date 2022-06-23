@@ -1,48 +1,29 @@
 package com.emelyanov.vegocity.modules.main.modules.cart.domain.usecases
 
-import com.emelyanov.vegocity.modules.main.modules.cart.domain.models.CartItem
+import com.emelyanov.vegocity.modules.main.modules.cart.domain.models.ViewCartItem
+import com.emelyanov.vegocity.shared.domain.models.RequestResult
+import com.emelyanov.vegocity.shared.domain.services.cartrepo.ICartRepository
+import com.emelyanov.vegocity.shared.domain.services.productsrepo.IProductsRepository
 import javax.inject.Inject
-
-val cartItems = mutableListOf(
-    CartItem(
-        id = "p1",
-        title = "Product 1",
-        price = 1999,
-        count = 1
-    ),
-    CartItem(
-        id = "p2",
-        title = "Product 2",
-        price = 1999,
-        count = 1
-    ),
-    CartItem(
-        id = "p3",
-        title = "Product 3",
-        price = 1999,
-        count = 1
-    ),
-    CartItem(
-        id = "p4",
-        title = "Product 4",
-        price = 1999,
-        count = 1
-    ),
-    CartItem(
-        id = "p5",
-        title = "Product 5",
-        price = 1999,
-        count = 1
-    ),
-)
-
 
 class GetCartProductsUseCase
 @Inject
 constructor(
-
+    private val cartRepository: ICartRepository,
+    private val productRepository: IProductsRepository
 ) {
-    operator fun invoke() : List<CartItem> {
-        return cartItems
+    suspend operator fun invoke() : RequestResult<List<ViewCartItem>> {
+        val cartItems = cartRepository.cartFlow.value
+        val products = mutableListOf<ViewCartItem>()
+
+        for(item in cartItems) {
+            val productInfo = productRepository.getProduct(item.id)
+            if (productInfo is RequestResult.Error) return@invoke RequestResult.Error(productInfo.type, productInfo.message, productInfo.exception)
+
+            val product = productInfo.getSuccessResult().data
+            products.add(ViewCartItem(product.id, product.title, product.photoUrl, product.price.toInt(), item.count))
+        }
+
+        return RequestResult.Success(products)
     }
 }

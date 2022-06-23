@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -41,7 +42,8 @@ const val NAV_BAR_HEIGHT = 80
 fun VegoNavBar(
     modifier: Modifier = Modifier,
     mainNavController: NavController,
-    onCartClick: () -> Unit
+    onCartClick: () -> Unit,
+    cartItemsCount: Int,
 ) {
     val backStackEntry = mainNavController.currentBackStackEntryAsState()
 
@@ -90,20 +92,41 @@ fun VegoNavBar(
                     }
                 )
             }
-            Button(
-                modifier = Modifier
-                    .padding(12.dp)
-                    .size(56.dp)
-                    .align(Alignment.CenterVertically),
-                shape = RoundedCornerShape(16.dp),
-                contentPadding = PaddingValues(0.dp),
-                onClick = onCartClick
+            Box(
+                modifier = Modifier.align(Alignment.CenterVertically)
             ) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_cart),
-                    contentDescription = "Cart icon",
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
+                Button(
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .size(56.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    contentPadding = PaddingValues(0.dp),
+                    onClick = onCartClick,
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_cart),
+                        contentDescription = "Cart icon",
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                }
+
+                if(cartItemsCount > 0) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .offset(x = 12.dp, y = (-14).dp)
+                            .clip(RoundedCornerShape(50))
+                            .background(MaterialTheme.colorScheme.error)
+                            .padding(horizontal = 5.dp)
+
+                    ) {
+                        Text(
+                            text = cartItemsCount.toString(),
+                            style = MaterialTheme.typography.labelSmall
+                                .copy(color = MaterialTheme.colorScheme.onError)
+                        )
+                    }
+                }
             }
         }
     }
@@ -217,7 +240,8 @@ private fun Preview() {
         VegoNavBar(
             modifier = Modifier.height(NAV_BAR_HEIGHT.dp),
             mainNavController = rememberNavController(),
-            onCartClick = {}
+            onCartClick = {},
+            0
         )
     }
 }

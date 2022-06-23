@@ -22,6 +22,11 @@ interface IVegoApi {
         @Path("id") id: String
     ): ProductDetailsResponse
 
+    @GET("products/get-short/{id}")
+    suspend fun fetchProduct(
+        @Path("id") id: String
+    ): ProductResponse
+
     @GET("categories/get-all")
     suspend fun fetchCategories(): List<CategoryResponse>
 }

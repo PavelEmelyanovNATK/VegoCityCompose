@@ -13,6 +13,8 @@ data class ProductDetailsResponse(
     val title: String,
     @SerialName("categoryId")
     val categoryId: Int,
+    @SerialName("category")
+    val category: String,
     @SerialName("description")
     val description: String,
     @SerialName("price")

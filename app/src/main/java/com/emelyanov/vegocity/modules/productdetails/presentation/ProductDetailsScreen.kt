@@ -1,11 +1,8 @@
 package com.emelyanov.vegocity.modules.productdetails.presentation
 
-import android.widget.Space
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
@@ -26,14 +23,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
-import coil.compose.SubcomposeAsyncImageContent
 import coil.request.ImageRequest
 import com.emelyanov.vegocity.R
-import com.emelyanov.vegocity.modules.main.presentation.components.NAV_BAR_HEIGHT
 import com.emelyanov.vegocity.modules.productdetails.domain.ProductDetailsViewModel
-import com.emelyanov.vegocity.shared.domain.models.ProductDetails
 import com.emelyanov.vegocity.shared.presentation.components.DetailScreenBackdrop
 import com.emelyanov.vegocity.shared.presentation.components.ErrorStateView
 import com.emelyanov.vegocity.shared.presentation.components.HorizontalVegoCounter
@@ -127,7 +120,9 @@ fun ProductDetailsScreen(
                     Spacer(Modifier.weight(1f))
 
                     Button(
-                        onClick = { },
+                        onClick = {
+                            viewState.onAddToCart()
+                        },
                         contentPadding = ButtonDefaults.smallPadding
                     ) {
                         Text(
@@ -198,7 +193,9 @@ fun DescriptionBlock(
         is ProductDetailsViewModel.ViewState.Loading -> {
             Column {
                 Text(
-                    modifier = Modifier.placeholder(
+                    modifier = Modifier
+                        .padding(18.dp)
+                        .placeholder(
                         visible = true,
                         color = Color.LightGray,
                         shape = RoundedCornerShape(8.dp),
@@ -329,6 +326,7 @@ fun DescriptionBlock(
                     )
 
                     val interactionSource = remember { MutableInteractionSource() }
+                    val icon = if(viewState.isFavorite) R.drawable.ic_favorite_checked else R.drawable.ic_favorite
                     Icon(
                         modifier = Modifier
                             .clickable(
@@ -336,7 +334,7 @@ fun DescriptionBlock(
                                 indication = rememberRipple(bounded = false, radius = 24.dp),
                                 onClick = viewState.onAddToFavorites
                             ),
-                        painter = painterResource(R.drawable.ic_favorite),
+                        painter = painterResource(icon),
                         contentDescription = "Favorites button",
                         tint = MaterialTheme.colorScheme.onBackground
                     )

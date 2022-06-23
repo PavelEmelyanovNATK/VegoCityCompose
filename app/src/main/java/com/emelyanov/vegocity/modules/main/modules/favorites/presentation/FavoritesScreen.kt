@@ -45,10 +45,7 @@ fun FavoritesScreen(
     viewState: FavoritesViewModel.ViewState,
     searchField: String,
     onSearchChanged: (String) -> Unit,
-    onCategoryClick: (String) -> Unit,
-    onProductClick: (String) -> Unit,
     onRefresh: () -> Unit,
-    onDeleteClick: (String) -> Unit
 ) {
     val backdropState = rememberBackdropScaffoldState(
         initialValue = BackdropValue.Concealed
@@ -90,7 +87,7 @@ fun FavoritesScreen(
             )
         },
         backLayerContent = {
-            CategoriesMenuBlock(viewState = viewState, onCategoryClick = onCategoryClick)
+            CategoriesMenuBlock(viewState = viewState)
         },
         frontLayerContent = {
             if(viewState is FavoritesViewModel.ViewState.Error) {
@@ -120,15 +117,13 @@ fun FavoritesScreen(
                         span = { GridItemSpan(this.maxLineSpan) }
                     ) {
                         ShortCategoriesBlock(
-                            viewState = viewState, onCategoryClick = onCategoryClick) {
+                            viewState = viewState) {
                             
                         }
                     }
 
                     productsBlock(
-                        viewState = viewState,
-                        onProductClick = onProductClick,
-                        onDeleteClick = onDeleteClick
+                        viewState = viewState
                     )
                 }
             }
@@ -141,7 +136,6 @@ fun FavoritesScreen(
 private fun ShortCategoriesBlock(
     modifier: Modifier = Modifier,
     viewState: FavoritesViewModel.ViewState,
-    onCategoryClick: (String) -> Unit,
     onButtonAllClick: () -> Unit
 ) = Box(modifier) {
     when(viewState) {
@@ -190,7 +184,7 @@ private fun ShortCategoriesBlock(
                         VegoChip(
                             isChecked = it.isSelected,
                             onClick = {
-                                onCategoryClick(it.id)
+                                viewState.onCategoryClick(it.id)
                             },
                             text = it.name
                         )
@@ -225,7 +219,6 @@ private fun ShortCategoriesBlock(
 @Composable
 private fun CategoriesMenuBlock(
     viewState: FavoritesViewModel.ViewState,
-    onCategoryClick: (String) -> Unit
 ) {
     when(viewState) {
         is FavoritesViewModel.ViewState.Loading -> {
@@ -236,7 +229,7 @@ private fun CategoriesMenuBlock(
         is FavoritesViewModel.ViewState.Presentation -> {
             CategoriesMenu(
                 categories = viewState.categories,
-                onCategoryClick = onCategoryClick,
+                onCategoryClick = viewState.onCategoryClick,
                 isLoading = false
             )
         }
@@ -245,8 +238,6 @@ private fun CategoriesMenuBlock(
 
 private fun LazyGridScope.productsBlock(
     viewState: FavoritesViewModel.ViewState,
-    onProductClick: (String) -> Unit,
-    onDeleteClick: (String) -> Unit
 ) {
     when(viewState) {
         is FavoritesViewModel.ViewState.Loading -> {
@@ -282,6 +273,7 @@ private fun LazyGridScope.productsBlock(
                                 highlight = PlaceholderHighlight.shimmer(Color.White),
                             ),
                         title = "placeholder",
+                        imageUrl = "",
                         price = 1111,
                         onProductClick = {
 
@@ -312,12 +304,13 @@ private fun LazyGridScope.productsBlock(
                 ) {
                     FavoriteCard(
                         title = it.title,
+                        imageUrl = it.photoUrl,
                         price = it.price,
                         onProductClick = {
-                            onProductClick(it.id)
+                            viewState.onProductClick(it.id)
                         },
                         onDeleteClick = {
-                            onDeleteClick(it.id)
+                            viewState.onRemove(it.id)
                         }
                     )
                 }

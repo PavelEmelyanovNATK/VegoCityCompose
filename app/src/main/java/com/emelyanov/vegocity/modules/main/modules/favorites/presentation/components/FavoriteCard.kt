@@ -15,11 +15,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.emelyanov.vegocity.R
 import com.emelyanov.vegocity.modules.main.modules.catalog.presentation.components.CORNER_RADIUS
 import com.emelyanov.vegocity.modules.main.modules.catalog.presentation.components.PRODUCT_CARD_HEIGHT
@@ -28,6 +32,7 @@ import com.emelyanov.vegocity.modules.main.modules.catalog.presentation.componen
 fun FavoriteCard(
     modifier: Modifier = Modifier,
     title: String,
+    imageUrl: String,
     price: Int,
     onProductClick: () -> Unit,
     onDeleteClick: () -> Unit,
@@ -38,12 +43,16 @@ fun FavoriteCard(
             .height(PRODUCT_CARD_HEIGHT)
             .clickable(onClick = onProductClick)
     ) {
-        Image(
+        AsyncImage(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(PRODUCT_CARD_HEIGHT / 2 + CORNER_RADIUS)
-                .clip(RoundedCornerShape(topStart = CORNER_RADIUS, topEnd = CORNER_RADIUS)),
-            painter = painterResource(R.drawable.test_image),
+                .clip(RoundedCornerShape(topStart = CORNER_RADIUS, topEnd = CORNER_RADIUS))
+                .background(Color.LightGray),
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(imageUrl)
+                .crossfade(true)
+                .build(),
             contentDescription = "Product image",
             contentScale = ContentScale.Crop
         )

@@ -13,8 +13,10 @@ data class ProductResponse(
     val title: String,
     @SerialName("categoryId")
     val categoryId: Int,
+    @SerialName("category")
+    val category: String,
     @SerialName("price")
     val price: Double,
     @SerialName("imagePath")
-    val photoPath: String
+    val photoPath: String?
 )

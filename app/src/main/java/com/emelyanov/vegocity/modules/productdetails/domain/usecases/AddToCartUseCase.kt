@@ -1,20 +1,16 @@
-package com.emelyanov.vegocity.modules.main.modules.cart.domain.usecases
+package com.emelyanov.vegocity.modules.productdetails.domain.usecases
 
 import com.emelyanov.vegocity.shared.domain.services.cartrepo.CartRepository
 import com.emelyanov.vegocity.shared.domain.services.cartrepo.ICartRepository
 import javax.inject.Inject
 
 
-class DeleteAllCartProductsUseCase
+class AddToCartUseCase
 @Inject
 constructor(
     private val cartRepository: ICartRepository
 ) {
-    fun deleteAll() {
-        cartRepository.removeAll()
-    }
-
-    fun deleteAll(productId: String) {
-        cartRepository.removeAll(productId)
+    operator fun invoke(id: String, count: Int) {
+        cartRepository.add(id, count)
     }
 }

@@ -5,7 +5,6 @@ import com.emelyanov.vegocity.modules.main.modules.catalog.domain.models.toViewP
 import com.emelyanov.vegocity.shared.domain.models.RequestResult
 import com.emelyanov.vegocity.shared.domain.models.view.ViewCategory
 import com.emelyanov.vegocity.shared.domain.services.productsrepo.IProductsRepository
-import com.emelyanov.vegocity.shared.domain.services.productsrepo.ProductsRepository
 import javax.inject.Inject
 
 
@@ -17,7 +16,7 @@ private val products = listOf(
         isNew = false,
         price = 1999,
         actualPrice = 1999,
-        categoryId = "c1"
+        category = "c1"
     ),
     ViewProduct(
         id = "p2",
@@ -26,7 +25,7 @@ private val products = listOf(
         isNew = false,
         price = 1999,
         actualPrice = 1999,
-        categoryId = "c1"
+        category = "c1"
     ),
     ViewProduct(
         id = "p3",
@@ -35,7 +34,7 @@ private val products = listOf(
         isNew = false,
         price = 1999,
         actualPrice = 1999,
-        categoryId = "c1"
+        category = "c1"
     ),
     ViewProduct(
         id = "p4",
@@ -44,7 +43,7 @@ private val products = listOf(
         isNew = false,
         price = 1999,
         actualPrice = 1999,
-        categoryId = "c2"
+        category = "c2"
     ),
     ViewProduct(
         id = "p5",
@@ -53,7 +52,7 @@ private val products = listOf(
         isNew = false,
         price = 1999,
         actualPrice = 1999,
-        categoryId = "c2"
+        category = "c2"
     ),
     ViewProduct(
         id = "p6",
@@ -62,7 +61,7 @@ private val products = listOf(
         isNew = false,
         price = 1999,
         actualPrice = 1999,
-        categoryId = "c2"
+        category = "c2"
     ),
     ViewProduct(
         id = "p7",
@@ -71,7 +70,7 @@ private val products = listOf(
         isNew = false,
         price = 1999,
         actualPrice = 1999,
-        categoryId = "c3"
+        category = "c3"
     ),
 )
 

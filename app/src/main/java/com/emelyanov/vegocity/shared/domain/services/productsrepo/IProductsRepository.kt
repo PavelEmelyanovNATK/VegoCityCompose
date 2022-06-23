@@ -17,6 +17,8 @@ interface IProductsRepository {
         filter: String = ""
     ): RequestResult<List<Product>>
 
+    suspend fun getProduct(id: String): RequestResult<Product>
+
     suspend fun getProductDetails(id: String): RequestResult<ProductDetails>
 
     suspend fun getCategories(): RequestResult<List<Category>>

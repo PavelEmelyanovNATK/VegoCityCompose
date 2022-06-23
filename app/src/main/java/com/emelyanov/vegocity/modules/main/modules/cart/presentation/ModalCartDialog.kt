@@ -20,6 +20,7 @@ import com.emelyanov.vegocity.modules.main.modules.cart.domain.CartViewModel
 import com.emelyanov.vegocity.modules.main.modules.cart.presentation.components.CartDismissValue
 import com.emelyanov.vegocity.modules.main.modules.cart.presentation.components.CartItem
 import com.emelyanov.vegocity.modules.main.modules.cart.presentation.components.rememberCartDismissState
+import com.emelyanov.vegocity.shared.presentation.components.ErrorStateView
 import com.example.compose.smallPadding
 
 @ExperimentalFoundationApi
@@ -60,53 +61,75 @@ fun ColumnScope.ModalCartDialog(
             }
         }
 
-        if(viewState is CartViewModel.ViewState.Presentation) {
-            viewState.products.forEach { item ->
-                item(
-                    key = item.id
-                ) {
-                    CartItem(
-                        modifier = Modifier
-                            .padding(horizontal = 18.dp)
-                            .animateItemPlacement(),
-                        title = item.title,
-                        price = item.price,
-                        count = item.count,
-                        onDismiss = { viewState.onDelete(item.id) },
-                        onCountChange = { viewState.onCountChange(item.id, it) }
-                    )
-                }
-            }
-
-            item {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 18.dp),
-                    horizontalAlignment = Alignment.End
-                ) {
-                    Text(
-                        text = "Итого: ${viewState.totalCost} руб",
-                        style = MaterialTheme.typography.labelLarge
-                            .copy(
-                                color = MaterialTheme.colorScheme.onSurface,
-                                textAlign = TextAlign.End
-                            )
-                    )
-
-                    Button(
-                        onClick = viewState.onGoToOrder,
-                        contentPadding = ButtonDefaults.smallPadding
+        when(viewState) {
+            is CartViewModel.ViewState.Presentation -> {
+                viewState.products.forEach { item ->
+                    item(
+                        key = item.id
                     ) {
-                        Text(
-                            text = "Перейти к оформлению",
-                            style = MaterialTheme.typography.labelLarge
-                                .copy(MaterialTheme.colorScheme.onPrimary)
+                        CartItem(
+                            modifier = Modifier
+                                .padding(horizontal = 18.dp)
+                                .animateItemPlacement(),
+                            title = item.title,
+                            imageUrl = item.imageUrl,
+                            price = item.price,
+                            count = item.count,
+                            onDismiss = { viewState.onDelete(item.id) },
+                            onIncrement = { viewState.onIncrement(item.id) },
+                            onDecrement = { viewState.onDecrement(item.id) }
                         )
                     }
                 }
 
-                Spacer(Modifier.height(18.dp))
+                item(key = "Total") {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 18.dp),
+                        horizontalAlignment = Alignment.End
+                    ) {
+                        Text(
+                            text = "Итого: ${viewState.totalCost} руб",
+                            style = MaterialTheme.typography.labelLarge
+                                .copy(
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    textAlign = TextAlign.End
+                                )
+                        )
+
+                        Button(
+                            onClick = viewState.onGoToOrder,
+                            contentPadding = ButtonDefaults.smallPadding
+                        ) {
+                            Text(
+                                text = "Перейти к оформлению",
+                                style = MaterialTheme.typography.labelLarge
+                                    .copy(MaterialTheme.colorScheme.onPrimary)
+                            )
+                        }
+                    }
+
+                    Spacer(Modifier.height(18.dp))
+                }
+            }
+
+            is CartViewModel.ViewState.Error -> {
+                item(
+                    key = "Error"
+                ) {
+                    ErrorStateView(
+                        modifier = Modifier.height(400.dp),
+                        message = viewState.message,
+                        onRefresh = {  }
+                    )
+                }
+            }
+
+            is CartViewModel.ViewState.Loading -> {
+                item {
+                    Box(Modifier.height(100.dp))
+                }
             }
         }
     }

@@ -5,16 +5,12 @@ import com.emelyanov.vegocity.shared.domain.services.cartrepo.ICartRepository
 import javax.inject.Inject
 
 
-class DeleteAllCartProductsUseCase
+class IncrementItemCountUseCase
 @Inject
 constructor(
     private val cartRepository: ICartRepository
 ) {
-    fun deleteAll() {
-        cartRepository.removeAll()
-    }
-
-    fun deleteAll(productId: String) {
-        cartRepository.removeAll(productId)
+    operator fun invoke(productId: String) {
+        cartRepository.add(productId)
     }
 }

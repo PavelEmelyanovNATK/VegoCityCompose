@@ -1,18 +1,3 @@
-/*
- * Copyright 2020 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 
 package com.emelyanov.vegocity.modules.main.modules.cart.presentation.components
 
@@ -39,12 +24,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.emelyanov.vegocity.R
 import com.emelyanov.vegocity.shared.presentation.components.VerticalVegoCounter
 import kotlinx.coroutines.CancellationException
@@ -101,10 +89,12 @@ private const val OVERLAP_OFFSET = 16f
 fun CartItem(
     modifier: Modifier = Modifier,
     title: String,
+    imageUrl: String,
     price: Int,
     count: Int,
     onDismiss: () -> Unit,
-    onCountChange: (Int) -> Unit
+    onIncrement: () -> Unit,
+    onDecrement: () -> Unit
 ) = BoxWithConstraints(
     modifier
         .fillMaxWidth()
@@ -142,13 +132,17 @@ fun CartItem(
             .clip(RoundedCornerShape(16.dp))
             .background(MaterialTheme.colorScheme.errorContainer)
     ) {
-        Image(
+        AsyncImage(
             modifier = Modifier
                 .fillMaxHeight()
                 .width(IMAGE_WIDTH.dp)
-                .align(Alignment.CenterStart),
-            painter = painterResource(id = R.drawable.test_image),
-            contentDescription = "",
+                .align(Alignment.CenterStart)
+                .background(Color.LightGray),
+            model = ImageRequest.Builder(LocalContext.current)
+                .data(imageUrl)
+                .crossfade(true)
+                .build(),
+            contentDescription = "Product image",
             contentScale = ContentScale.Crop
         )
 
@@ -193,8 +187,8 @@ fun CartItem(
                     .align(Alignment.CenterEnd)
                     .padding(end = 18.dp),
                 value = count,
-                onIncrement = { onCountChange(it) },
-                onDecrement = { onCountChange(it) }
+                onIncrement = { onIncrement() },
+                onDecrement = { onDecrement() }
             )
         }
     }

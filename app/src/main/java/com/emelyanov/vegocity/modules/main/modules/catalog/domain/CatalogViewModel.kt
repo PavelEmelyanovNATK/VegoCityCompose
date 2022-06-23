@@ -9,7 +9,6 @@ import com.emelyanov.vegocity.shared.domain.BaseStateViewModel
 import com.emelyanov.vegocity.shared.domain.models.RequestResult
 import com.emelyanov.vegocity.shared.domain.models.view.ViewCategory
 import com.emelyanov.vegocity.shared.domain.usecases.GetCategoriesUseCase
-import com.emelyanov.vegocity.shared.domain.usecases.GroupProductsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -27,7 +26,6 @@ constructor(
     private val getCategories: GetCategoriesUseCase,
     private val getNewProducts: GetNewProductsUseCase,
     private val getProducts: GetProductsUseCase,
-    private val groupProducts: GroupProductsUseCase,
     private val navigateToDetails: NavigateToDetailsUseCase
 ) : BaseStateViewModel<CatalogViewModel.ViewState>(
     ViewState.Default(
@@ -69,7 +67,7 @@ constructor(
         viewModelScope.launch {
             val categories = getCategories().checkForError() ?: return@launch
             val products = getProducts(searchFilter = searchField.value).checkForError() ?: return@launch
-            val groupedProducts = groupProducts(categories, products)
+            val groupedProducts = products.groupBy { it.category }
 
             updateState { oldState ->
                 if(oldState is ViewState.Default)
@@ -127,7 +125,7 @@ constructor(
 
                         val products = getProducts(newCategories.filter { it.isSelected }, searchField).checkForError() ?: return@launch
 
-                        val groupedProducts = groupProducts(newCategories, products)
+                        val groupedProducts = products.groupBy { it.category }
                         ViewState.Filter(
                             productsViewState = ProductsViewState.Presentation(
                                 categories = newCategories,

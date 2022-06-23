@@ -18,9 +18,22 @@ class ProductsRepository(
             Product(
                 id = it.id,
                 title = it.title,
-                categoryId = it.categoryId,
+                category = it.category,
                 price = it.price,
-                photoUrl = it.photoPath
+                photoUrl = it.photoPath ?: ""
+            )
+        }
+    }
+
+    override suspend fun getProduct(id: String): RequestResult<Product>
+    = vegoRequestWrapper {
+        vegoApi.fetchProduct(id).let {
+            Product(
+                id = it.id,
+                title = it.title,
+                category = it.category,
+                price = it.price,
+                photoUrl = it.photoPath ?: ""
             )
         }
     }

@@ -1,5 +1,12 @@
 package com.emelyanov.vegocity.shared.di
 
+import android.content.Context
+import com.emelyanov.vegocity.shared.domain.services.cartrepo.CartRepository
+import com.emelyanov.vegocity.shared.domain.services.cartrepo.ICartRepository
+import com.emelyanov.vegocity.shared.domain.services.favoritesrepo.FavoritesRepository
+import com.emelyanov.vegocity.shared.domain.services.favoritesrepo.IFavoritesRepository
+import com.emelyanov.vegocity.shared.domain.services.localstorage.CartStorage
+import com.emelyanov.vegocity.shared.domain.services.localstorage.ILocalStorage
 import com.emelyanov.vegocity.shared.domain.services.productsrepo.IProductsRepository
 import com.emelyanov.vegocity.shared.domain.services.productsrepo.ProductsRepository
 import com.emelyanov.vegocity.shared.domain.services.vegoapi.IVegoApi
@@ -7,6 +14,7 @@ import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFact
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -23,8 +31,7 @@ class ModuleCore {
 
     @Singleton
     @Provides
-    fun provideVegoApi(): IVegoApi
-            = Retrofit.Builder()
+    fun provideVegoApi(): IVegoApi = Retrofit.Builder()
         .baseUrl("http://10.147.17.238:3000")
         .addConverterFactory(json.asConverterFactory(mediaType))
         .build()
@@ -36,4 +43,16 @@ class ModuleCore {
         vegoApi: IVegoApi
     ): IProductsRepository
     = ProductsRepository(vegoApi)
+
+    @Singleton
+    @Provides
+    fun provideCartStorage(@ApplicationContext context: Context): ILocalStorage = CartStorage(context)
+
+    @Singleton
+    @Provides
+    fun provideCartRepository(localStorage: ILocalStorage): ICartRepository = CartRepository(localStorage)
+
+    @Singleton
+    @Provides
+    fun provideFavoritesRepository(vegoApi: IVegoApi, localStorage: ILocalStorage): IFavoritesRepository = FavoritesRepository(vegoApi, localStorage)
 }

@@ -76,14 +76,15 @@ fun MainNavHost(
             val viewState = viewModel.viewState.collectAsState()
             val searchField = viewModel.searchField.collectAsState()
 
+            LaunchedEffect(key1 = true) {
+                viewModel.reloadToDefault()
+            }
+
             FavoritesScreen(
                 viewState = viewState.value,
                 searchField = searchField.value,
                 onSearchChanged = viewModel::searchFiledChanged,
-                onCategoryClick = viewModel::categoryClicked,
-                onProductClick = viewModel::onProductClick,
                 onRefresh = viewModel::reloadToDefault,
-                onDeleteClick = {  }
             )
         }
         composable(
